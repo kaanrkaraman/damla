@@ -8,7 +8,7 @@ HEADER = re.compile(
 )
 AUTOMATIC = re.compile(r"^(Merge |Revert \"|fixup! |squash! )")
 ATTRIBUTION = re.compile(r"co-authored-by:.*(claude|anthropic)|generated with.*claude", re.IGNORECASE)
-MAX_HEADER = 72
+MAX_HEADER = 50
 MAX_BODY_LINE = 100
 
 

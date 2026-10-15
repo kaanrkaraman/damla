@@ -21,7 +21,11 @@ def test_rejects_unknown_types_and_missing_scope_syntax() -> None:
 def test_rejects_style_mistakes_in_the_subject() -> None:
     assert rules.problems("feat: Add a thing")
     assert rules.problems("feat: add a thing.")
-    assert rules.problems(f"feat: {'x' * 80}")
+
+
+def test_header_is_capped_at_fifty_characters() -> None:
+    assert rules.problems(f"feat: {'x' * 44}") == []
+    assert rules.problems(f"feat: {'x' * 45}")
 
 
 def test_rejects_a_body_without_a_blank_separator() -> None:
