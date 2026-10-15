@@ -42,7 +42,8 @@ body {
   display: flex;
   flex-direction: column;
   inline-size: 360px;
-  block-size: 540px;
+  min-block-size: 280px;
+  max-block-size: 540px;
 }
 
 main { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; }

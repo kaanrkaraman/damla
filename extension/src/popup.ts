@@ -505,6 +505,9 @@ async function loadAbout(): Promise<void> {
 }
 
 async function openSettings(): Promise<void> {
+  // Settings keep the height of the list so the popup does not resize when switching views.
+  const app = appRoot();
+  app.style.blockSize = `${app.offsetHeight}px`;
   S.view = "settings";
   S.selecting = false;
   render();
@@ -515,6 +518,7 @@ async function openSettings(): Promise<void> {
 }
 
 function closeSettings(): void {
+  appRoot().style.removeProperty("block-size");
   S.view = "list";
   render();
 }
