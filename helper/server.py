@@ -18,7 +18,9 @@ APP_DIR = HOME / "Library" / "Application Support" / "Damla"
 SETTINGS_FILE = APP_DIR / "settings.json"
 HISTORY_FILE = APP_DIR / "history.json"
 ORIGIN_PREFIX = "safari-web-extension://"
-HOSTS = ("127.0.0.1:8791", "localhost:8791")
+PORT = 7560
+API_VERSION = 1
+HOSTS = (f"127.0.0.1:{PORT}", f"localhost:{PORT}")
 GITHUB_REPO = "kaanrkaraman/damla"
 YTDLP_REPO = "yt-dlp/yt-dlp"
 CHECK_EVERY = 6 * 3600
@@ -28,7 +30,6 @@ BUNDLE_BIN = ROOT / "bin"
 USER_BIN = APP_DIR / "bin"
 CA_FILE = "/etc/ssl/cert.pem"
 KEEP_FINISHED = 50
-GENERIC_TITLES = {""}
 FINISHED = ("done", "error", "cancelled")
 ACTIVE = ("queued", "running")
 
@@ -164,6 +165,7 @@ def about():
         app, ytdlp = UPDATES["app"], UPDATES["ytdlp"]
         return {
             "helper": APP_VERSION,
+            "api": API_VERSION,
             "ytdlp": TOOL["ytdlp"],
             "latest_app": app,
             "latest_ytdlp": ytdlp,
@@ -183,7 +185,7 @@ def download_ytdlp():
     check = subprocess.run([sys.executable, str(part), "--version"], capture_output=True, text=True, timeout=60)
     if check.returncode != 0 or not check.stdout.strip():
         part.unlink(missing_ok=True)
-        raise OSError("indirilen yt-dlp çalışmadı")
+        raise OSError("downloaded yt-dlp does not run")
     part.replace(target)
     target.chmod(0o755)
     return [sys.executable, str(target)]
@@ -247,7 +249,7 @@ def command(job, s):
         cmd += ["--cookies-from-browser", "safari"]
     folder = Path(s["folder"])
     if s["by_site"]:
-        folder /= (urlparse(job["url"]).hostname or "diger").removeprefix("www.")
+        folder /= (urlparse(job["url"]).hostname or "other").removeprefix("www.")
     return [*cmd, "-P", str(folder), "--", job["url"]]
 
 
@@ -323,7 +325,7 @@ def run(job, s):
             job["percent"] = 100 if ok else job["percent"]
             job["path"] = path if ok else ""
             job["file"] = Path(path).name if ok else ""
-            if ok and job["title"] in GENERIC_TITLES:
+            if ok and not job["title"]:
                 job["title"] = re.sub(r"\s*\[[^\]]+\]$", "", Path(path).stem)
             job["msg"] = "" if ok else (err[-1] if err else "@failed").removeprefix("ERROR: ")[:300]
         job["finished"] = time.time()
@@ -421,9 +423,9 @@ def update_app():
     return r.returncode == 0
 
 
-def pick_folder():
+def pick_folder(prompt: str) -> str:
     r = subprocess.run(
-        ["osascript", "-e", 'POSIX path of (choose folder with prompt "İndirme klasörünü seçin")'],
+        ["osascript", "-e", "on run argv", "-e", "POSIX path of (choose folder with prompt (item 1 of argv))", "-e", "end run", "--", prompt[:120]],
         capture_output=True, text=True,
     )
     return r.stdout.strip().rstrip("/") if r.returncode == 0 else ""
@@ -501,7 +503,7 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["update-ytdlp"]:
             return self._reply(200, update_ytdlp())
         if parts == ["pick-folder"]:
-            folder = pick_folder()
+            folder = pick_folder(str(self._body().get("prompt") or "Choose a folder"))
             if folder:
                 SETTINGS.update(clean_settings({"folder": folder}, SETTINGS))
                 save_json(SETTINGS_FILE, SETTINGS)
@@ -520,4 +522,4 @@ def exit_with_parent():
 if __name__ == "__main__":
     if ".app/Contents/" in str(RES):
         threading.Thread(target=exit_with_parent, daemon=True).start()
-    ThreadingHTTPServer(("127.0.0.1", 8791), Handler).serve_forever()
+    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()

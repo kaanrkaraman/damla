@@ -1,4 +1,4 @@
-const HELPER = "http://127.0.0.1:8791";
+const HELPER = "http://127.0.0.1:7560";
 
 async function request(method, path, body) {
   try {
