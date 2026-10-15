@@ -82,6 +82,16 @@ PYTHONDONTWRITEBYTECODE=1 "$PY/bin/python3" -B -I -c "import http.server, json, 
 PYTHONDONTWRITEBYTECODE=1 "$PY/bin/python3" -B -I "$RES/bin/yt-dlp" --version
 codesign --verify --deep --strict "$APP"
 
+# Launching must not crash: Swift 6 isolation checks only fail at runtime, inside system callbacks.
+DAMLA_SMOKE_TEST=1 "$APP/Contents/MacOS/Damla" > /dev/null 2>&1 &
+SMOKE_PID=$!
+sleep 8
+kill -0 "$SMOKE_PID" || { echo "Damla crashed on launch" >&2; exit 1; }
+kill "$SMOKE_PID"
+wait "$SMOKE_PID" 2>/dev/null || true
+"$LSREGISTER" -u "$APP" 2>/dev/null || true
+codesign --verify --deep --strict "$APP"
+
 if [ -n "$NOTARY_PROFILE" ] && [ "$SIGN_ID" != "-" ]; then
   echo "== Notarizing the app"
   APPZIP="$OUT/Damla-app.zip"
