@@ -4,6 +4,8 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-15
+
 ### Changed
 - The extension is rebuilt in TypeScript.
 - The bundled Python is 3.14.
