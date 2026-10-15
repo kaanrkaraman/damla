@@ -15,14 +15,8 @@
   "background": { "service_worker": "background.js" },
   "content_scripts": [
     {
-      "matches": [
-        "*://*.x.com/*",
-        "*://*.twitter.com/*",
-        "*://*.instagram.com/*",
-        "*://*.facebook.com/*",
-        "*://*.youtube.com/*"
-      ],
-      "js": ["i18n.js", "content.js"],
+      "matches": ["*://*.x.com/*", "*://*.twitter.com/*", "*://*.instagram.com/*", "*://*.facebook.com/*", "*://*.youtube.com/*"],
+      "js": ["content.js"],
       "run_at": "document_idle"
     }
   ],

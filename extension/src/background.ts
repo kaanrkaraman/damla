@@ -1,13 +1,20 @@
-const HELPER = "http://127.0.0.1:7560";
+import type { BackgroundMessage, Reply } from "./types";
+import { isActive } from "./types";
 
-async function request(method, path, body) {
+const HELPER = "http://127.0.0.1:7560";
+const POLL_MS = 700;
+
+const ICON_ON = { 16: "icons/16.png", 32: "icons/32.png", 48: "icons/48.png" };
+const ICON_OFF = { 16: "icons/off-16.png", 32: "icons/off-32.png", 48: "icons/off-48.png" };
+
+async function request(method: string, path: string, body?: unknown): Promise<Reply> {
   try {
-    const r = await fetch(HELPER + path, {
+    const response = await fetch(HELPER + path, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: body && JSON.stringify(body),
+      body: body === undefined ? undefined : JSON.stringify(body),
     });
-    return await r.json();
+    return (await response.json()) as Reply;
   } catch {
     return { offline: true };
   }
@@ -15,42 +22,41 @@ async function request(method, path, body) {
 
 let tracking = false;
 
-async function trackBadge() {
+async function trackBadge(): Promise<void> {
   if (tracking) return;
   tracking = true;
   try {
     for (;;) {
-      const r = await request("GET", "/jobs");
-      const jobs = r.jobs ?? [];
-      const active = jobs.filter((j) => j.state === "queued" || j.state === "running").length;
+      const reply = await request("GET", "/jobs");
+      const jobs = reply.jobs ?? [];
+      const active = jobs.filter(isActive).length;
       await browser.action.setBadgeText({ text: active ? String(active) : "" });
       for (const tab of await browser.tabs.query({})) {
-        browser.tabs.sendMessage(tab.id, { type: "jobs", jobs }).catch(() => {});
+        if (tab.id !== undefined) browser.tabs.sendMessage(tab.id, { type: "jobs", jobs }).catch(() => {});
       }
       if (!active) break;
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      await new Promise((resolve) => setTimeout(resolve, POLL_MS));
     }
-  } catch {
   } finally {
     tracking = false;
   }
 }
 
-browser.runtime.onMessage.addListener(async ({ api }) => {
-  if (!api) return;
-  const r = await request(api.method, api.path, api.body);
-  if (api.method === "POST" && api.path === "/jobs" && !r.offline) trackBadge();
-  return r;
+const setIcon = (tabId: number, found: boolean) => browser.action.setIcon({ tabId, path: found ? ICON_ON : ICON_OFF }).catch(() => {});
+
+browser.runtime.onMessage.addListener((message: BackgroundMessage, sender: browser.runtime.MessageSender) => {
+  if ("type" in message) {
+    if (sender.tab?.id !== undefined) setIcon(sender.tab.id, message.found);
+    return undefined;
+  }
+  if (!("api" in message)) return undefined;
+  const { method, path, body } = message.api;
+  return request(method, path, body).then((reply) => {
+    if (method === "POST" && path === "/jobs" && !reply.offline) void trackBadge();
+    return reply;
+  });
 });
 
-const ICON_ON = { 16: "icons/16.png", 32: "icons/32.png", 48: "icons/48.png" };
-const ICON_OFF = { 16: "icons/off-16.png", 32: "icons/off-32.png", 48: "icons/off-48.png" };
-const setIcon = (tabId, found) => browser.action.setIcon({ tabId, path: found ? ICON_ON : ICON_OFF }).catch(() => {});
-
-browser.runtime.onMessage.addListener((msg, sender) => {
-  if (msg.type === "found" && sender.tab) setIcon(sender.tab.id, msg.found);
-});
-
-browser.tabs.onUpdated.addListener((tabId, { status }) => {
-  if (status === "loading") setIcon(tabId, false);
+browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === "loading") setIcon(tabId, false);
 });

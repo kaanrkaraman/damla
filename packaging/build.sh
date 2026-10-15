@@ -20,6 +20,9 @@ sign() {
 "$HERE/fetch-tools.sh"
 "$HERE/build-ffmpeg.sh"
 
+echo "== Extension build"
+(cd "$ROOT" && npm ci --silent && npm run --silent typecheck && npm run --silent build)
+
 echo "== Xcode Release build"
 rm -rf "$OUT/dd"
 xcodebuild -project "$ROOT/Damla/Damla.xcodeproj" -scheme Damla -configuration Release \

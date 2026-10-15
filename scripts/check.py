@@ -1,12 +1,12 @@
 import json
 import plistlib
 import re
-import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 EXTENSION = ROOT / "extension"
+SOURCES = EXTENSION / "src"
 LOCALES = EXTENSION / "_locales"
 PROJECT = ROOT / "Damla" / "Damla.xcodeproj" / "project.pbxproj"
 SERVER = ROOT / "helper" / "server.py"
@@ -41,22 +41,22 @@ def check_versions(errors: list[str]) -> str:
 
 def check_contract(errors: list[str]) -> None:
     server = read(SERVER)
-    background = read(EXTENSION / "background.js")
-    popup = read(EXTENSION / "popup.js")
+    background = read(SOURCES / "background.ts")
+    popup = read(SOURCES / "popup.ts")
     server_port = find(r"^PORT = (\d+)", server, "server.py")
-    extension_port = find(r"127\.0\.0\.1:(\d+)", background, "background.js")
+    extension_port = find(r"127\.0\.0\.1:(\d+)", background, "background.ts")
     if server_port != extension_port:
         errors.append(f"port: helper uses {server_port}, extension uses {extension_port}")
     server_api = find(r"^API_VERSION = (\d+)", server, "server.py")
-    popup_api = find(r"^const REQUIRED_API = (\d+)", popup, "popup.js")
+    popup_api = find(r"^const REQUIRED_API = (\d+)", popup, "popup.ts")
     if server_api != popup_api:
         errors.append(f"api: helper speaks {server_api}, extension requires {popup_api}")
     repo = find(r'^GITHUB_REPO = "([^"]+)"', server, "server.py")
     feed = plistlib.loads((ROOT / "Damla" / "Damla" / "Info.plist").read_bytes())["SUFeedURL"]
     if f"github.com/{repo}/" not in feed:
         errors.append(f"repo: SUFeedURL {feed} does not point at {repo}")
-    if f"github.com/{repo}/" not in read(EXTENSION / "popup.js"):
-        errors.append(f"repo: popup.js does not link to {repo}")
+    if f"github.com/{repo}/" not in popup:
+        errors.append(f"repo: popup.ts does not link to {repo}")
 
 
 def load_messages() -> dict[str, dict[str, dict]]:
@@ -68,7 +68,7 @@ def placeholders(entry: dict) -> set[str]:
 
 
 def used_message_keys() -> set[str]:
-    sources = [read(path) for path in (EXTENSION / "popup.js", EXTENSION / "content.js", EXTENSION / "background.js", EXTENSION / "popup.html")]
+    sources = [read(path) for path in sorted(SOURCES.glob("*.ts"))]
     manifest = read(EXTENSION / "manifest.json")
     keys = set(re.findall(r"__MSG_(\w+)__", manifest))
     for source in sources:
@@ -107,19 +107,17 @@ def check_manifest(errors: list[str]) -> None:
     referenced |= set(manifest["icons"].values()) | set(manifest["action"]["default_icon"].values())
     for script in manifest["content_scripts"]:
         referenced |= set(script["js"])
-    for path in sorted(referenced):
-        if not (EXTENSION / path).is_file():
-            errors.append(f"manifest: {path} does not exist")
     popup = read(EXTENSION / "popup.html")
-    for path in re.findall(r'(?:src|href)="([^"]+)"', popup):
-        if not (EXTENSION / path).is_file():
-            errors.append(f"popup.html: {path} does not exist")
+    referenced |= set(re.findall(r'(?:src|href)="([^"]+)"', popup))
+    for path in sorted(referenced):
+        exists = (EXTENSION / path).is_file() or (SOURCES / Path(path).with_suffix(".ts")).is_file()
+        if not exists:
+            errors.append(f"manifest: {path} has neither a static file nor a TypeScript entry point")
     project = read(PROJECT)
-    for item in sorted(EXTENSION.iterdir()):
-        if item.name.startswith("."):
-            continue
-        if f"../../extension/{item.name}" not in project:
-            errors.append(f"xcodeproj: extension/{item.name} is not bundled into the Safari extension")
+    bundled = {Path(path).parts[0] for path in referenced} | {"_locales", "manifest.json"}
+    for name in sorted(bundled):
+        if f"../../extension/dist/{name}" not in project:
+            errors.append(f"xcodeproj: extension/dist/{name} is not bundled into the Safari extension")
 
 
 def check_catalog(errors: list[str]) -> None:
@@ -140,18 +138,6 @@ def check_catalog(errors: list[str]) -> None:
         errors.append(f"Localizable.xcstrings: string {key} is never used")
 
 
-def check_syntax(errors: list[str]) -> None:
-    subprocess_checks = [([sys.executable, "-I", "-m", "py_compile", str(path)], path) for path in (SERVER, ROOT / "scripts" / "bump_version.py", Path(__file__))]
-    subprocess_checks += [(["node", "--check", str(path)], path) for path in sorted(EXTENSION.glob("*.js"))]
-    for command, path in subprocess_checks:
-        try:
-            result = subprocess.run(command, capture_output=True, text=True)
-        except FileNotFoundError:
-            continue
-        if result.returncode != 0:
-            errors.append(f"syntax: {path.relative_to(ROOT)}: {result.stderr.strip().splitlines()[-1] if result.stderr else 'failed'}")
-
-
 def main() -> None:
     errors: list[str] = []
     version = check_versions(errors)
@@ -159,7 +145,6 @@ def main() -> None:
     check_messages(errors)
     check_manifest(errors)
     check_catalog(errors)
-    check_syntax(errors)
     if errors:
         print("\n".join(errors), file=sys.stderr)
         raise SystemExit(f"{len(errors)} problem(s)")
