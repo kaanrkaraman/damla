@@ -75,9 +75,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   inset-inline-start: 2px;
   inline-size: calc((100% - 4px) / var(--n));
   translate: calc(var(--i) * 100%) 0;
-  background: var(--raised);
+  background: rgb(0 122 255);
+  background: AccentColor;
   border-radius: 999px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.16), 0 0 0 0.5px rgb(0 0 0 / 0.04);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25), 0 0 0 0.5px rgb(0 0 0 / 0.08);
   transition: translate 0.34s cubic-bezier(0.3, 1.35, 0.5, 1), scale 0.2s ease-out;
 }
 .seg:has(input:active)::before { scale: 1.07 0.96; }
@@ -92,7 +93,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   color: var(--label-2);
   transition: color 0.2s;
 }
-.seg input:checked + span { color: var(--label); }
+.seg input:checked + span {
+  color: #fff;
+  color: AccentColorText;
+}
 .seg:has(input:focus-visible) { outline: 2px solid var(--label-2); outline-offset: 1px; }
 
 .icon-btn, .ring {
