@@ -4,6 +4,11 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+### Changed
+- The popup opens faster.
+- The selected option in Settings is brighter.
+- Settings keep the height of the video list.
+
 ## [0.7.2] - 2026-10-15
 
 ### Changed
