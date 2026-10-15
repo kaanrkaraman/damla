@@ -4,6 +4,8 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-10-15
+
 ### Changed
 - The popup opens faster.
 - The selected option in Settings is brighter.
