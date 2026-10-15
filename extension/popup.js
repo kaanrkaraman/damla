@@ -6,7 +6,6 @@ const ICONS = {
   retry: '<path d="M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.2h-3.2"/>',
   sliders: '<path d="M3.5 6H7M11 6h5.5M3.5 14H10M14 14h2.5"/><circle cx="9" cy="6" r="2"/><circle cx="12" cy="14" r="2"/>',
   back: '<path d="M12 4 6 10l6 6"/>',
-  check: '<path d="M4.5 10.5l3.5 3.5 7.5-8"/>',
   alert: '<circle cx="10" cy="10" r="7.5"/><path d="M10 6.2v4.6M10 13.6v.01"/>',
   film: '<rect x="3.5" y="5" width="13" height="10" rx="2"/><path d="M8.5 8.2v3.6l3-1.8z" fill="currentColor"/>',
 };
@@ -220,9 +219,9 @@ function offlineView() {
   );
 }
 
-const setRow = (label, control, desc, stacked) =>
+const setRow = (label, control, { desc, stacked } = {}) =>
   stacked
-    ? h("div", { class: "set-row stacked" }, h("p", {}, label), control, desc && h("p", { class: "desc" }, desc))
+    ? h("div", { class: "set-row stacked" }, h("p", {}, label), control)
     : h("div", { class: "set-row" }, h("div", {}, h("p", {}, label), desc && h("p", { class: "desc" }, desc)), control);
 
 const group = (caption, ...rows) => [h("p", { class: "caption" }, caption), h("div", { class: "group" }, ...rows)];
@@ -230,40 +229,37 @@ const group = (caption, ...rows) => [h("p", { class: "caption" }, caption), h("d
 async function update(patch) {
   const r = await api("PUT", "/settings", patch);
   if (r?.settings) S.settings = r.settings;
-  render();
 }
 
 const toggleBox = (key) =>
   h("input", { type: "checkbox", role: "switch", switch: true, checked: !!S.settings[key], onchange: (e) => update({ [key]: e.target.checked }) });
 
-const segmented = (key, options) =>
-  h(
-    "div",
-    { class: "seg compact", role: "radiogroup" },
-    ...options.map(([value, name]) =>
+const segmented = (key, options) => {
+  const index = Math.max(0, options.findIndex(([value]) => String(S.settings[key]) === String(value)));
+  const seg = h("div", { class: "seg", role: "radiogroup" });
+  seg.style.setProperty("--n", options.length);
+  seg.style.setProperty("--i", index);
+  options.forEach(([value, name], i) =>
+    seg.append(
       h(
         "label",
         {},
-        h("input", { type: "radio", name: key, value: String(value), checked: String(S.settings[key]) === String(value), onchange: () => update({ [key]: value }) }),
+        h("input", {
+          type: "radio",
+          name: key,
+          value: String(value),
+          checked: i === index,
+          onchange: () => {
+            seg.style.setProperty("--i", i);
+            update({ [key]: value });
+          },
+        }),
         h("span", {}, name),
       ),
     ),
   );
-
-const choice = (key, options) =>
-  h(
-    "div",
-    { class: "group", role: "radiogroup" },
-    ...options.map(([value, name, desc]) => {
-      const on = S.settings[key] === value;
-      return h(
-        "button",
-        { class: "set-row choice", type: "button", role: "radio", "aria-checked": String(on), onclick: () => update({ [key]: value }) },
-        h("div", {}, h("p", {}, name), h("p", { class: "desc" }, desc)),
-        on ? icon("check") : h("span", { class: "check-space" }),
-      );
-    }),
-  );
+  return seg;
+};
 
 const inlineBox = () =>
   h("input", {
@@ -271,10 +267,9 @@ const inlineBox = () =>
     role: "switch",
     switch: true,
     checked: S.inline,
-    onchange: async (e) => {
+    onchange: (e) => {
       S.inline = e.target.checked;
-      await browser.storage.local.set({ inline: S.inline });
-      render();
+      browser.storage.local.set({ inline: S.inline });
     },
   });
 
@@ -307,6 +302,7 @@ function versionFooter() {
     h("p", {}, `Damla ${ext}`, a?.app_update && [` · ${t("available", a.latest_app.version)} `, textBtn(a.bundled ? t("update") : t("openRelease"), updateApp)]),
     h("p", {}, `yt-dlp ${a?.ytdlp === null ? "…" : a?.ytdlp || "—"}`, a?.ytdlp_update && [` · ${t("available", a.latest_ytdlp.version)} `, textBtn(S.updating ? t("updating") : t("update"), updateYtdlp, S.updating)]),
     a && a.helper !== ext && h("p", {}, t("outOfSync", a.helper)),
+    h("p", {}, textBtn(t("checkUpdates"), updateApp)),
   );
 }
 
@@ -331,23 +327,19 @@ function settingsView() {
     "main",
     {},
     ...group(t("saveLocation"), setRow(s.folder_label, h("button", { type: "button", onclick: pickFolder }, t("change")))),
-    h("p", { class: "caption" }, t("videoFormat")),
-    choice("codec", [
-      ["compat", t("compatTitle"), t("compatDesc")],
-      ["quality", t("qualityTitle"), t("qualityDesc")],
-    ]),
     ...group(
-      t("resolution"),
-      setRow(t("upperLimit"), segmented("quality", [["best", t("best")], ["1080", "1080p"], ["720", "720p"], ["audio", t("audio")]]), t("audioDesc"), true),
+      t("video"),
+      setRow(t("resolution"), segmented("quality", [["best", t("best")], ["1080", "1080p"], ["720", "720p"], ["audio", t("audio")]]), { stacked: true }),
+      setRow(t("format"), segmented("codec", [["auto", t("formatAuto")], ["compat", t("formatCompat")]])),
     ),
     ...group(
       t("downloadsGroup"),
-      setRow(t("atOnce"), segmented("concurrent", [[1, "1"], [2, "2"], [3, "3"], [4, "4"]]), t("atOnceDesc")),
-      setRow(t("bySite"), toggleBox("by_site"), t("bySiteDesc")),
-      setRow(t("revealWhenDone"), toggleBox("reveal"), t("revealWhenDoneDesc")),
+      setRow(t("atOnce"), segmented("concurrent", [[1, "1"], [2, "2"], [3, "3"], [4, "4"]])),
+      setRow(t("bySite"), toggleBox("by_site")),
+      setRow(t("revealWhenDone"), toggleBox("reveal")),
+      setRow(t("inlineButton"), inlineBox()),
+      setRow(t("useSession"), toggleBox("cookies"), { desc: t("useSessionDesc") }),
     ),
-    ...group(t("onPage"), setRow(t("inlineButton"), inlineBox(), t("inlineButtonDesc"))),
-    ...group(t("account"), setRow(t("useSession"), toggleBox("cookies"), t("useSessionDesc"))),
     versionFooter(),
   );
   return [head, body];
@@ -368,7 +360,11 @@ async function loadAbout() {
   S.about = r?.helper ? r : null;
 }
 
+const MIN_SETTINGS_HEIGHT = 530;
+
 async function openSettings() {
+  const app = document.getElementById("app");
+  app.style.blockSize = `${Math.max(app.offsetHeight, MIN_SETTINGS_HEIGHT)}px`;
   S.view = "settings";
   S.selecting = false;
   render();
@@ -379,6 +375,7 @@ async function openSettings() {
 }
 
 function closeSettings() {
+  document.getElementById("app").style.removeProperty("block-size");
   S.view = "list";
   render();
 }
