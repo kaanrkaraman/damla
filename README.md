@@ -27,12 +27,17 @@ The helper listens only on `127.0.0.1:7560` and accepts writes only from the Saf
 
 ```sh
 git config core.hooksPath .githooks
-python3 scripts/check.py
+npm ci
+uv sync
+scripts/lint.sh
 ```
 
-`scripts/check.py` runs before every commit. It keeps the version in `VERSION`, `manifest.json`, the Xcode project and `CHANGELOG.md` in sync, checks that the helper port and API version match the extension, validates the manifest, and verifies that every localized string exists in every language and is used.
+- `scripts/format.sh` formats Python (ruff), TypeScript and JSON (Biome) and Swift (swift-format).
+- `scripts/lint.sh` runs ruff, ty, pytest, tsc, Biome, swift-format, shellcheck and `scripts/check.py`. `scripts/check.py` keeps `VERSION`, `manifest.json`, the Xcode project and `CHANGELOG.md` in sync, checks that the helper port and API version match the extension, validates the manifest and verifies that every localized string exists in every language and is used.
+- The pre-commit hook runs `scripts/check_staged.py` (secrets, generated files, size) and `scripts/lint.sh`. The commit-msg hook requires [Conventional Commits](https://www.conventionalcommits.org): `type(scope): subject` with `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore` or `revert`.
+- The extension is TypeScript in `extension/src`. `npm run build` bundles it into `extension/dist`, which the Xcode project packages; `packaging/build.sh` does this for you.
 
-Strings live in `extension/_locales/<lang>/messages.json` (extension) and `Damla/Damla/Localizable.xcstrings` (app). To add a language, add it to both and to `knownRegions` in the Xcode project.
+Strings live in `extension/_locales/<lang>/messages.json` (extension) and `Damla/Damla/Localizable.xcstrings` (app). To add a language, add it to both and to `knownRegions` in the Xcode project. Decisions that are not obvious from the code are in [docs/internals.md](docs/internals.md); the menu bar proposal is in [docs/menu-bar-plan.md](docs/menu-bar-plan.md).
 
 ## Build
 
