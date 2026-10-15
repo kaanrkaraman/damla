@@ -10,7 +10,7 @@ package = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["helper"]
+pythonpath = ["helper", "scripts"]
 
 [tool.ruff]
 target-version = "py313"
@@ -40,7 +40,7 @@ dev = [
 ]
 
 [tool.ty.environment]
-extra-paths = ["helper"]
+extra-paths = ["helper", "scripts"]
 
 [tool.ty.src]
 include = ["helper", "scripts", "tests"]
