@@ -4,6 +4,8 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-15
+
 ### Fixed
 - Damla crashed right after launching, which stopped the helper from restarting, "Check for updates" and the Safari extension prompt.
 
