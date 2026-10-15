@@ -47,7 +47,7 @@ private final class HelperSupervisor {
             process.standardOutput = log
             process.standardError = log
         }
-        process.terminationHandler = { [weak self] _ in
+        process.terminationHandler = { @Sendable [weak self] _ in
             Task { @MainActor in self?.didExit() }
         }
         do {
@@ -148,6 +148,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     private let helper = HelperSupervisor()
 
+    // The build runs the app for a few seconds and fails if it crashes; the login prompt would only block that run.
+    private let isSmokeTest = ProcessInfo.processInfo.environment["DAMLA_SMOKE_TEST"] != nil
+
     // Login items and updates need the app in its final place, not on a mounted disk image or a translocated copy.
     private var runsFromDiskImage: Bool {
         let path = Bundle.main.bundlePath
@@ -167,7 +170,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         let bundled = HelperSupervisor.python != nil
         helper.start()
-        if bundled, !LoginItem.isEnabled {
+        if bundled, !LoginItem.isEnabled, !isSmokeTest {
             NSApp.activate(ignoringOtherApps: true)
             LoginItem.offer()
         }
@@ -192,22 +195,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func offerExtension() {
-        SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionID) { state, _ in
-            Task { @MainActor in
-                guard let state, !state.isEnabled else { return }
-                let open = Dialog.confirm(
-                    String(localized: "extension.title"),
-                    detail: String(localized: "extension.detail"),
-                    accept: String(localized: "extension.open"),
-                    decline: String(localized: "common.notNow")
-                )
-                guard open else { return }
-                do {
-                    try await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID)
-                } catch {
-                    Dialog.confirm(
-                        String(localized: "extension.title"), detail: error.localizedDescription, accept: String(localized: "common.ok"))
-                }
+        Task {
+            guard let state = try? await SFSafariExtensionManager.stateOfSafariExtension(withIdentifier: extensionID), !state.isEnabled
+            else {
+                return
+            }
+            let open = Dialog.confirm(
+                String(localized: "extension.title"),
+                detail: String(localized: "extension.detail"),
+                accept: String(localized: "extension.open"),
+                decline: String(localized: "common.notNow")
+            )
+            guard open else { return }
+            do {
+                try await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID)
+            } catch {
+                Dialog.confirm(
+                    String(localized: "extension.title"), detail: error.localizedDescription, accept: String(localized: "common.ok"))
             }
         }
     }
