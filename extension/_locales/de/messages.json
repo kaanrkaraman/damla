@@ -1,0 +1,318 @@
+{
+  "extDescription": {
+    "message": "Lädt das Video eines Beitrags mit einem lokalen yt-dlp-Helfer herunter."
+  },
+  "actionTitle": {
+    "message": "Videos auf dieser Seite"
+  },
+  "download": {
+    "message": "Laden"
+  },
+  "queued": {
+    "message": "In der Warteschlange"
+  },
+  "downloading": {
+    "message": "Wird geladen"
+  },
+  "downloadingPct": {
+    "message": "Wird geladen $P1$ %",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "downloadedLabel": {
+    "message": "Geladen"
+  },
+  "retry": {
+    "message": "Erneut versuchen"
+  },
+  "helperOff": {
+    "message": "Helfer ist aus"
+  },
+  "reveal": {
+    "message": "Im Finder zeigen"
+  },
+  "cancel": {
+    "message": "Abbrechen"
+  },
+  "cancelled": {
+    "message": "Abgebrochen"
+  },
+  "failed": {
+    "message": "Download fehlgeschlagen"
+  },
+  "justNow": {
+    "message": "Gerade eben"
+  },
+  "trayDownloading": {
+    "message": "Wird geladen"
+  },
+  "trayDownloadingPct": {
+    "message": "Wird geladen $P1$ %",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayMany_one": {
+    "message": "$P1$ Video wird geladen",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayMany_other": {
+    "message": "$P1$ Videos werden geladen",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayManyPct_one": {
+    "message": "$P1$ Video wird geladen $P2$ %",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "trayManyPct_other": {
+    "message": "$P1$ Videos werden geladen $P2$ %",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "trayDone": {
+    "message": "Geladen"
+  },
+  "trayDoneMany_one": {
+    "message": "$P1$ Video geladen",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayDoneMany_other": {
+    "message": "$P1$ Videos geladen",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayFailed": {
+    "message": "Download fehlgeschlagen"
+  },
+  "kindPost": {
+    "message": "Beitrag"
+  },
+  "kindVideo": {
+    "message": "Video"
+  },
+  "tweetVideo": {
+    "message": "Tweet-Video"
+  },
+  "igVideo": {
+    "message": "Instagram-Video"
+  },
+  "ytVideo": {
+    "message": "YouTube-Video"
+  },
+  "fbVideo": {
+    "message": "Facebook-Video"
+  },
+  "msg_missing": {
+    "message": "yt-dlp nicht gefunden"
+  },
+  "msg_failed": {
+    "message": "yt-dlp ist fehlgeschlagen"
+  },
+  "msg_converting": {
+    "message": "Wird konvertiert …"
+  },
+  "title": {
+    "message": "Videos"
+  },
+  "settings": {
+    "message": "Einstellungen"
+  },
+  "settingsNew": {
+    "message": "Einstellungen · Update verfügbar"
+  },
+  "select": {
+    "message": "Auswählen"
+  },
+  "finish": {
+    "message": "Fertig"
+  },
+  "count_one": {
+    "message": "$P1$ · $P2$ Video",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "count_other": {
+    "message": "$P1$ · $P2$ Videos",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "downloadingNow": {
+    "message": "Wird gerade geladen"
+  },
+  "notFound": {
+    "message": "Keine Videos gefunden"
+  },
+  "notFoundHint": {
+    "message": "Öffne einen Beitrag oder eine Wiedergabeliste und öffne dann dieses Popup erneut."
+  },
+  "downloadSelected": {
+    "message": "Auswahl laden · $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "pickVideos": {
+    "message": "Videos auswählen"
+  },
+  "downloadAll": {
+    "message": "Alle laden · $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "offlineTitle": {
+    "message": "Helfer ist aus"
+  },
+  "offlineHint": {
+    "message": "Öffne die Damla-App."
+  },
+  "retryBtn": {
+    "message": "Erneut versuchen"
+  },
+  "back": {
+    "message": "Zurück"
+  },
+  "loadFailed": {
+    "message": "Einstellungen konnten nicht geladen werden"
+  },
+  "unreachable": {
+    "message": "Der Helfer ist nicht erreichbar."
+  },
+  "saveLocation": {
+    "message": "Speicherort"
+  },
+  "change": {
+    "message": "Ändern …"
+  },
+  "chooseFolder": {
+    "message": "Wähle den Download-Ordner"
+  },
+  "video": {
+    "message": "Video"
+  },
+  "resolution": {
+    "message": "Auflösung"
+  },
+  "format": {
+    "message": "Format"
+  },
+  "formatAuto": {
+    "message": "Automatisch"
+  },
+  "formatCompat": {
+    "message": "Kompatibel"
+  },
+  "best": {
+    "message": "Beste"
+  },
+  "audio": {
+    "message": "Audio"
+  },
+  "downloadsGroup": {
+    "message": "Downloads"
+  },
+  "atOnce": {
+    "message": "Gleichzeitig"
+  },
+  "bySite": {
+    "message": "In Ordner nach Website sortieren"
+  },
+  "revealWhenDone": {
+    "message": "Danach im Finder zeigen"
+  },
+  "inlineButton": {
+    "message": "Schaltfläche auf Videos"
+  },
+  "useSession": {
+    "message": "Safari-Sitzung verwenden"
+  },
+  "useSessionDesc": {
+    "message": "Vollständiger Festplattenzugriff erforderlich"
+  },
+  "available": {
+    "message": "$P1$ verfügbar",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "update": {
+    "message": "Aktualisieren"
+  },
+  "openRelease": {
+    "message": "Version öffnen"
+  },
+  "updating": {
+    "message": "Wird aktualisiert …"
+  },
+  "checkUpdates": {
+    "message": "Nach Updates suchen"
+  },
+  "whatsNew": {
+    "message": "Neuigkeiten"
+  },
+  "outOfSync": {
+    "message": "Der Helfer läuft mit $P1$. Starte ihn neu, damit die Versionen übereinstimmen.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "incompatibleTitle": {
+    "message": "Damla muss aktualisiert werden"
+  },
+  "incompatibleHint": {
+    "message": "Erweiterung und Helfer passen nicht zusammen. Beende Damla und öffne es erneut oder installiere die neueste Version."
+  }
+}

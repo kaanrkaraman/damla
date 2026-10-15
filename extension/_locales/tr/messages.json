@@ -1,3 +1,318 @@
 {
-  "extDescription": { "message": "Gönderideki videoyu yerel yt-dlp yardımcısıyla indirir." }
+  "extDescription": {
+    "message": "Gönderideki videoyu yerel yt-dlp yardımcısıyla indirir."
+  },
+  "actionTitle": {
+    "message": "Bu sayfadaki videolar"
+  },
+  "download": {
+    "message": "İndir"
+  },
+  "queued": {
+    "message": "Sırada"
+  },
+  "downloading": {
+    "message": "İndiriliyor"
+  },
+  "downloadingPct": {
+    "message": "İndiriliyor %$P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "downloadedLabel": {
+    "message": "İndirildi"
+  },
+  "retry": {
+    "message": "Tekrar dene"
+  },
+  "helperOff": {
+    "message": "Yardımcı kapalı"
+  },
+  "reveal": {
+    "message": "Finder'da göster"
+  },
+  "cancel": {
+    "message": "İptal et"
+  },
+  "cancelled": {
+    "message": "İptal edildi"
+  },
+  "failed": {
+    "message": "İndirilemedi"
+  },
+  "justNow": {
+    "message": "Az önce"
+  },
+  "trayDownloading": {
+    "message": "İndiriliyor"
+  },
+  "trayDownloadingPct": {
+    "message": "İndiriliyor %$P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayMany_one": {
+    "message": "$P1$ video iniyor",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayMany_other": {
+    "message": "$P1$ video iniyor",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayManyPct_one": {
+    "message": "$P1$ video iniyor %$P2$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "trayManyPct_other": {
+    "message": "$P1$ video iniyor %$P2$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "trayDone": {
+    "message": "İndirildi"
+  },
+  "trayDoneMany_one": {
+    "message": "$P1$ video indirildi",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayDoneMany_other": {
+    "message": "$P1$ video indirildi",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayFailed": {
+    "message": "İndirilemedi"
+  },
+  "kindPost": {
+    "message": "Gönderi"
+  },
+  "kindVideo": {
+    "message": "Video"
+  },
+  "tweetVideo": {
+    "message": "Tweet videosu"
+  },
+  "igVideo": {
+    "message": "Instagram videosu"
+  },
+  "ytVideo": {
+    "message": "YouTube videosu"
+  },
+  "fbVideo": {
+    "message": "Facebook videosu"
+  },
+  "msg_missing": {
+    "message": "yt-dlp bulunamadı"
+  },
+  "msg_failed": {
+    "message": "yt-dlp hata verdi"
+  },
+  "msg_converting": {
+    "message": "Dönüştürülüyor…"
+  },
+  "title": {
+    "message": "Videolar"
+  },
+  "settings": {
+    "message": "Ayarlar"
+  },
+  "settingsNew": {
+    "message": "Ayarlar · güncelleme var"
+  },
+  "select": {
+    "message": "Seç"
+  },
+  "finish": {
+    "message": "Bitti"
+  },
+  "count_one": {
+    "message": "$P1$ · $P2$ video",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "count_other": {
+    "message": "$P1$ · $P2$ video",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "downloadingNow": {
+    "message": "Şu an indiriliyor"
+  },
+  "notFound": {
+    "message": "Video bulunamadı"
+  },
+  "notFoundHint": {
+    "message": "Bir gönderiyi ya da oynatma listesini açın, sonra popup'ı yeniden açın."
+  },
+  "downloadSelected": {
+    "message": "Seçilenleri indir · $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "pickVideos": {
+    "message": "Video seç"
+  },
+  "downloadAll": {
+    "message": "Tümünü indir · $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "offlineTitle": {
+    "message": "Yardımcı kapalı"
+  },
+  "offlineHint": {
+    "message": "Damla uygulamasını açın."
+  },
+  "retryBtn": {
+    "message": "Yeniden dene"
+  },
+  "back": {
+    "message": "Geri"
+  },
+  "loadFailed": {
+    "message": "Ayarlar yüklenemedi"
+  },
+  "unreachable": {
+    "message": "Yardımcıya ulaşılamıyor."
+  },
+  "saveLocation": {
+    "message": "Kayıt yeri"
+  },
+  "change": {
+    "message": "Değiştir…"
+  },
+  "chooseFolder": {
+    "message": "İndirme klasörünü seçin"
+  },
+  "video": {
+    "message": "Video"
+  },
+  "resolution": {
+    "message": "Çözünürlük"
+  },
+  "format": {
+    "message": "Biçim"
+  },
+  "formatAuto": {
+    "message": "Otomatik"
+  },
+  "formatCompat": {
+    "message": "Uyumlu"
+  },
+  "best": {
+    "message": "En iyi"
+  },
+  "audio": {
+    "message": "Ses"
+  },
+  "downloadsGroup": {
+    "message": "İndirme"
+  },
+  "atOnce": {
+    "message": "Aynı anda"
+  },
+  "bySite": {
+    "message": "Siteye göre klasörle"
+  },
+  "revealWhenDone": {
+    "message": "Bitince Finder'da göster"
+  },
+  "inlineButton": {
+    "message": "Videoların üstünde düğme"
+  },
+  "useSession": {
+    "message": "Safari oturumunu kullan"
+  },
+  "useSessionDesc": {
+    "message": "Tam Disk Erişimi gerekli"
+  },
+  "available": {
+    "message": "$P1$ mevcut",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "update": {
+    "message": "Güncelle"
+  },
+  "openRelease": {
+    "message": "Sürümü aç"
+  },
+  "updating": {
+    "message": "Güncelleniyor…"
+  },
+  "checkUpdates": {
+    "message": "Güncellemeleri denetle"
+  },
+  "whatsNew": {
+    "message": "Yenilikler"
+  },
+  "outOfSync": {
+    "message": "Yardımcı $P1$ sürümünde. Eşleşmesi için yeniden başlatın.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "incompatibleTitle": {
+    "message": "Damla'nın güncellenmesi gerekiyor"
+  },
+  "incompatibleHint": {
+    "message": "Eklenti ile yardımcı uyuşmuyor. Damla'yı kapatıp yeniden açın ya da son sürümü kurun."
+  }
 }

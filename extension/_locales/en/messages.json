@@ -1,3 +1,318 @@
 {
-  "extDescription": { "message": "Downloads the video from a post with a local yt-dlp helper." }
+  "extDescription": {
+    "message": "Downloads the video from a post with a local yt-dlp helper."
+  },
+  "actionTitle": {
+    "message": "Videos on this page"
+  },
+  "download": {
+    "message": "Download"
+  },
+  "queued": {
+    "message": "Queued"
+  },
+  "downloading": {
+    "message": "Downloading"
+  },
+  "downloadingPct": {
+    "message": "Downloading $P1$%",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "downloadedLabel": {
+    "message": "Downloaded"
+  },
+  "retry": {
+    "message": "Try again"
+  },
+  "helperOff": {
+    "message": "Helper is off"
+  },
+  "reveal": {
+    "message": "Show in Finder"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "cancelled": {
+    "message": "Cancelled"
+  },
+  "failed": {
+    "message": "Download failed"
+  },
+  "justNow": {
+    "message": "Just now"
+  },
+  "trayDownloading": {
+    "message": "Downloading"
+  },
+  "trayDownloadingPct": {
+    "message": "Downloading $P1$%",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayMany_one": {
+    "message": "$P1$ video downloading",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayMany_other": {
+    "message": "$P1$ videos downloading",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayManyPct_one": {
+    "message": "$P1$ video downloading $P2$%",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "trayManyPct_other": {
+    "message": "$P1$ videos downloading $P2$%",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "trayDone": {
+    "message": "Downloaded"
+  },
+  "trayDoneMany_one": {
+    "message": "$P1$ video downloaded",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayDoneMany_other": {
+    "message": "$P1$ videos downloaded",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "trayFailed": {
+    "message": "Download failed"
+  },
+  "kindPost": {
+    "message": "Post"
+  },
+  "kindVideo": {
+    "message": "Video"
+  },
+  "tweetVideo": {
+    "message": "Tweet video"
+  },
+  "igVideo": {
+    "message": "Instagram video"
+  },
+  "ytVideo": {
+    "message": "YouTube video"
+  },
+  "fbVideo": {
+    "message": "Facebook video"
+  },
+  "msg_missing": {
+    "message": "yt-dlp not found"
+  },
+  "msg_failed": {
+    "message": "yt-dlp failed"
+  },
+  "msg_converting": {
+    "message": "Converting…"
+  },
+  "title": {
+    "message": "Videos"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "settingsNew": {
+    "message": "Settings · update available"
+  },
+  "select": {
+    "message": "Select"
+  },
+  "finish": {
+    "message": "Done"
+  },
+  "count_one": {
+    "message": "$P1$ · $P2$ video",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "count_other": {
+    "message": "$P1$ · $P2$ videos",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "downloadingNow": {
+    "message": "Downloading now"
+  },
+  "notFound": {
+    "message": "No videos found"
+  },
+  "notFoundHint": {
+    "message": "Open a post or a playlist, then reopen this popup."
+  },
+  "downloadSelected": {
+    "message": "Download selected · $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "pickVideos": {
+    "message": "Select videos"
+  },
+  "downloadAll": {
+    "message": "Download all · $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "offlineTitle": {
+    "message": "Helper is off"
+  },
+  "offlineHint": {
+    "message": "Open the Damla app."
+  },
+  "retryBtn": {
+    "message": "Try again"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "loadFailed": {
+    "message": "Couldn't load settings"
+  },
+  "unreachable": {
+    "message": "Can't reach the helper."
+  },
+  "saveLocation": {
+    "message": "Save location"
+  },
+  "change": {
+    "message": "Change…"
+  },
+  "chooseFolder": {
+    "message": "Choose the download folder"
+  },
+  "video": {
+    "message": "Video"
+  },
+  "resolution": {
+    "message": "Resolution"
+  },
+  "format": {
+    "message": "Format"
+  },
+  "formatAuto": {
+    "message": "Auto"
+  },
+  "formatCompat": {
+    "message": "Compatible"
+  },
+  "best": {
+    "message": "Best"
+  },
+  "audio": {
+    "message": "Audio"
+  },
+  "downloadsGroup": {
+    "message": "Downloads"
+  },
+  "atOnce": {
+    "message": "At once"
+  },
+  "bySite": {
+    "message": "Sort into site folders"
+  },
+  "revealWhenDone": {
+    "message": "Show in Finder when done"
+  },
+  "inlineButton": {
+    "message": "Button on videos"
+  },
+  "useSession": {
+    "message": "Use Safari session"
+  },
+  "useSessionDesc": {
+    "message": "Full Disk Access required"
+  },
+  "available": {
+    "message": "$P1$ available",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "update": {
+    "message": "Update"
+  },
+  "openRelease": {
+    "message": "Open release"
+  },
+  "updating": {
+    "message": "Updating…"
+  },
+  "checkUpdates": {
+    "message": "Check for updates"
+  },
+  "whatsNew": {
+    "message": "What's new"
+  },
+  "outOfSync": {
+    "message": "Helper is on $P1$. Restart it to match.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "incompatibleTitle": {
+    "message": "Damla needs an update"
+  },
+  "incompatibleHint": {
+    "message": "The extension and the helper don't match. Quit and reopen Damla, or install the latest version."
+  }
 }

@@ -11,6 +11,8 @@ const ICONS = {
 };
 
 const RING_LEN = 2 * Math.PI * 11;
+const REQUIRED_API = 1;
+const RELEASES_URL = "https://github.com/kaanrkaraman/damla/releases/tag";
 
 const S = {
   view: "list",
@@ -67,7 +69,7 @@ const jobFor = (url) => S.jobs.find((j) => j.url === url) ?? (S.pending.has(url)
 const busy = (j) => j?.state === "queued" || j?.state === "running";
 const startable = (i) => !busy(jobFor(i.url)) && jobFor(i.url)?.state !== "done";
 
-const msgText = (m) => (m?.startsWith("@") ? t(m) : m || "");
+const msgText = (m) => (m?.startsWith("@") ? t(`msg_${m.slice(1)}`) : m || "");
 
 function subText(job, kind) {
   switch (job?.state) {
@@ -184,7 +186,7 @@ function pageView() {
     ? h(
         "div",
         { class: "context" },
-        h("span", {}, t("count", S.host, n)),
+        h("span", {}, tn("count", n, S.host, n)),
         n > 1 && h("button", { class: "text-btn", type: "button", onclick: () => { S.selecting = !S.selecting; S.selected.clear(); render(); } }, S.selecting ? t("finish") : t("select")),
       )
     : null;
@@ -202,22 +204,17 @@ function pageView() {
         return row({ title: item.label, sub: subText(job, item.kind), err: job?.state === "error", thumbUrl: item.thumb, job, item, selectable: S.selecting });
       }))
     : notice("film", t("notFound"), t("notFoundHint"));
-  return h("main", {}, running, context, list, bar());
+  return h("main", {}, compatibilityWarning(), running, context, list, bar());
 }
 
 function offlineView() {
-  return h(
-    "main",
-    {},
-    notice(
-      "alert",
-      t("offlineTitle"),
-      t("offlineHint"),
-      h("code", {}, "python3 ~/Kod/Safari/safari-dl/helper/server.py"),
-      h("button", { type: "button", onclick: poll }, t("retryBtn")),
-    ),
-  );
+  return h("main", {}, notice("alert", t("offlineTitle"), t("offlineHint"), h("button", { type: "button", onclick: poll }, t("retryBtn"))));
 }
+
+const incompatible = () => S.about !== null && S.about.api !== REQUIRED_API;
+
+const compatibilityWarning = () =>
+  incompatible() && h("div", { class: "warning" }, icon("alert"), h("div", {}, h("p", { class: "warning-title" }, t("incompatibleTitle")), h("p", {}, t("incompatibleHint"))));
 
 const setRow = (label, control, { desc, stacked } = {}) =>
   stacked
@@ -292,6 +289,8 @@ async function updateApp() {
   if (url?.startsWith("https://github.com/")) browser.tabs.create({ url });
 }
 
+const openChangelog = () => browser.tabs.create({ url: `${RELEASES_URL}/v${browser.runtime.getManifest().version}` });
+
 function versionFooter() {
   const a = S.about;
   const ext = browser.runtime.getManifest().version;
@@ -302,7 +301,7 @@ function versionFooter() {
     h("p", {}, `Damla ${ext}`, a?.app_update && [` · ${t("available", a.latest_app.version)} `, textBtn(a.bundled ? t("update") : t("openRelease"), updateApp)]),
     h("p", {}, `yt-dlp ${a?.ytdlp === null ? "…" : a?.ytdlp || "—"}`, a?.ytdlp_update && [` · ${t("available", a.latest_ytdlp.version)} `, textBtn(S.updating ? t("updating") : t("update"), updateYtdlp, S.updating)]),
     a && a.helper !== ext && h("p", {}, t("outOfSync", a.helper)),
-    h("p", {}, textBtn(t("checkUpdates"), updateApp)),
+    h("p", {}, textBtn(t("checkUpdates"), updateApp), " · ", textBtn(t("whatsNew"), openChangelog)),
   );
 }
 
@@ -317,7 +316,7 @@ function settingsView() {
   );
   if (!s) return [head, h("main", {}, notice("alert", t("loadFailed"), t("unreachable")))];
   const pickFolder = async () => {
-    const r = await api("POST", "/pick-folder");
+    const r = await api("POST", "/pick-folder", { prompt: t("chooseFolder") });
     if (r?.settings) {
       S.settings = r.settings;
       render();
