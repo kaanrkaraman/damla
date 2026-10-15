@@ -41,6 +41,7 @@ private final class HelperSupervisor {
         guard !stopped, let python = Self.python, let resources = Bundle.main.resourceURL else { return }
         let process = Process()
         process.executableURL = python
+        // -B: bytecode written into the app bundle would break its signature.
         process.arguments = ["-B", "-I", resources.appendingPathComponent("helper/server.py").path]
         if let log = Self.openLog() {
             process.standardOutput = log
@@ -147,6 +148,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     private let helper = HelperSupervisor()
 
+    // Login items and updates need the app in its final place, not on a mounted disk image or a translocated copy.
     private var runsFromDiskImage: Bool {
         let path = Bundle.main.bundlePath
         return path.hasPrefix("/Volumes/") || path.contains("/AppTranslocation/")

@@ -503,6 +503,7 @@ async function loadAbout(): Promise<void> {
 }
 
 async function openSettings(): Promise<void> {
+  // Settings keep the size of the list so the popup does not jump when switching views.
   const app = appRoot();
   app.style.blockSize = `${Math.max(app.offsetHeight, MIN_SETTINGS_HEIGHT)}px`;
   S.view = "settings";

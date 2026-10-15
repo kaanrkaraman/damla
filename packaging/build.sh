@@ -45,6 +45,7 @@ LIBPY="$(echo "$PY"/lib/python3.*)"
 rm -rf "$LIBPY/test" "$LIBPY/idlelib" "$LIBPY/tkinter" "$LIBPY/turtledemo" "$LIBPY/ensurepip" "$LIBPY/site-packages/pip"* "$LIBPY"/config-*
 rm -f "$LIBPY"/lib-dynload/_tkinter* "$LIBPY"/lib-dynload/_test* "$PY"/bin/pip* "$PY"/bin/idle* "$PY"/bin/2to3* "$PY"/bin/pydoc*
 find "$PY" -name __pycache__ -prune -exec rm -rf {} +
+# Precompile now: Python may not write bytecode into the sealed bundle later.
 "$PY/bin/python3" -B -m compileall -q -j 0 --invalidation-mode unchecked-hash "$LIBPY"
 
 cp "$HERE/cache/yt-dlp" "$HERE/cache/ffmpeg" "$RES/bin/"
@@ -67,6 +68,7 @@ sign "$SPARKLE/Versions/B/Autoupdate"
 sign "$SPARKLE/Versions/B/Updater.app"
 sign "$SPARKLE"
 sign "$APP/Contents/PlugIns/Damla Extension.appex" --entitlements "$HERE/app/extension.entitlements"
+# Ad-hoc builds need library validation off because strict validation rejects an ad-hoc Sparkle.
 if [ "$SIGN_ID" = "-" ]; then
   sign "$APP" --entitlements "$HERE/app/tool.entitlements"
 else
@@ -74,6 +76,7 @@ else
 fi
 codesign --verify --deep --strict --verbose=1 "$APP"
 
+# Running the tools must leave the signature intact.
 echo "== Smoke test"
 PYTHONDONTWRITEBYTECODE=1 "$PY/bin/python3" -B -I -c "import http.server, json, shutil, ssl, subprocess, threading, urllib.request, uuid"
 PYTHONDONTWRITEBYTECODE=1 "$PY/bin/python3" -B -I "$RES/bin/yt-dlp" --version

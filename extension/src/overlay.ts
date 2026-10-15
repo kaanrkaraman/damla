@@ -88,7 +88,9 @@ export class Overlay {
   private tracked = new Set<string>();
 
   constructor() {
+    // A reloaded extension leaves its old layer behind in pages that were already open.
     for (const stale of document.querySelectorAll("damla-layer")) stale.remove();
+    // The layer hangs off <html>, outside the page content, so Instagram's hold-to-pause handlers never see our clicks.
     const host = document.createElement("damla-layer");
     const root = host.attachShadow({ mode: "closed" });
     const style = document.createElement("style");

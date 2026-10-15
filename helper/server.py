@@ -62,6 +62,8 @@ PROGRESS_TEMPLATE = "download:@@" + "/".join(
 type Job = dict[str, Any]
 type Settings = dict[str, Any]
 
+# Python must never write __pycache__ into the signed app:
+# that breaks the code signature and Safari then refuses the extension.
 TOOL_PATH = [str(USER_BIN), str(BUNDLE_BIN), "/opt/homebrew/bin", "/usr/local/bin", os.environ.get("PATH", "")]
 ENV = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PATH": ":".join(TOOL_PATH)}
 
@@ -254,6 +256,7 @@ def native_codecs() -> dict[str, str]:
     return {"h264": "avc", "hevc": "hvc|hev", **({"av1": "av01"} if has_av1_decoder(brand) else {})}
 
 
+# Restrict to codecs this Mac decodes natively; the fallbacks keep a download possible when none match.
 def native_format(codecs: dict[str, str]) -> str:
     return f"bv*[vcodec~='^({'|'.join(codecs.values())})']+ba/bv*+ba/b"
 
@@ -278,6 +281,7 @@ def command(job: Job, s: Settings, codecs: dict[str, str]) -> list[str]:
         cmd += ["-x", "--audio-format", "m4a"]
     else:
         res = "res" if quality == "best" else f"res:{QUALITY[quality]}"
+        # Codec first: sorting by resolution first picks VP9 reels that QuickTime cannot open.
         if s["codec"] == "compat":
             cmd += ["-S", f"vcodec:h264,{res},acodec:aac"]
         else:
@@ -559,6 +563,8 @@ def route(method: str, parts: list[str], body: dict[str, Any]) -> tuple[int, dic
             return 404, {"error": "not found"}
 
 
+# Safari sends no Origin on extension GET requests but does on POST and PUT,
+# so header-less reads are allowed only for the local Host.
 def is_allowed(origin: str | None, host: str | None, *, write: bool) -> bool:
     if origin:
         return origin.startswith(ORIGIN_PREFIX)
@@ -609,6 +615,7 @@ class Handler(BaseHTTPRequestHandler):
         self._handle(write=True)
 
 
+# A helper started by the app must not outlive it, otherwise the next launch finds the port taken.
 def exit_with_parent() -> None:
     parent = os.getppid()
     while True:
