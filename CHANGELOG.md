@@ -4,6 +4,8 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-15
+
 ### Added
 - German translation; the extension and the app follow the system language.
 - A warning in the popup when the extension and the helper do not match.
@@ -14,6 +16,7 @@ All notable changes to Damla. Each release section is shown to users in the upda
 - The folder picker prompt follows the system language.
 
 ### Fixed
+- Safari could refuse to load the extension after the app had run, because Python wrote cache files into the signed app and broke its signature.
 - Reloading the extension no longer logs "duplicate variable" errors on open pages.
 
 ## [0.5.0] - 2026-10-15
