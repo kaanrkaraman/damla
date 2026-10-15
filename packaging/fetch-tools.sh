@@ -6,7 +6,7 @@ CACHE="$HERE/cache"
 mkdir -p "$CACHE"
 
 PYTHON_TAG="20261013"
-PYTHON_ASSET="cpython-3.13.16+${PYTHON_TAG}-aarch64-apple-darwin-install_only.tar.gz"
+PYTHON_ASSET="cpython-3.14.8+${PYTHON_TAG}-aarch64-apple-darwin-install_only.tar.gz"
 YTDLP_TAG="2026.08.19"
 FFMPEG_VERSION="9.0.2"
 SPARKLE_VERSION="2.10.0"

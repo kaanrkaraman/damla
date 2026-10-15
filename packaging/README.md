@@ -33,7 +33,7 @@ PUBLISH=1 SIGN_ID=... NOTARY_PROFILE=... ./packaging/release.sh   # also runs gh
 
 ## What is bundled
 
-- CPython 3.13 (python-build-standalone), pruned
+- CPython 3.14 (python-build-standalone), pruned
 - yt-dlp zipapp, run by the bundled Python
 - ffmpeg built from source by `build-ffmpeg.sh` as LGPL (`--disable-gpl --disable-nonfree`), VideoToolbox for H.264 re-encoding
 - Sparkle 2 (without XPC services; the app is not sandboxed)

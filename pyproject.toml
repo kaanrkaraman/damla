@@ -2,7 +2,7 @@
 name = "damla-helper"
 version = "0.0.0"
 description = "Local yt-dlp helper behind the Damla Safari extension"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = []
 
 [tool.uv]
@@ -13,7 +13,7 @@ testpaths = ["tests"]
 pythonpath = ["helper", "scripts"]
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 line-length = 120
 src = ["helper", "scripts", "tests"]
 extend-exclude = ["packaging", "node_modules"]
