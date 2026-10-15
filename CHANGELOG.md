@@ -4,6 +4,9 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+### Changed
+- Switches in Settings follow the system accent color.
+
 ## [0.6.0] - 2026-10-15
 
 ### Added
