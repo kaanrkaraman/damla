@@ -284,9 +284,6 @@ async function pull() {
 }
 
 browser.runtime.onMessage.addListener((msg) => {
-  if (msg.type === "scan") {
-    return Promise.resolve(posts().map(({ url, label, thumb }) => ({ url, label, thumb, kind: kindOf(url) })));
-  }
   if (msg.type === "jobs") applyJobs(msg.jobs ?? []);
 });
 
@@ -353,9 +350,16 @@ function attach(mount, post) {
   schedule();
 }
 
+let reported = null;
+
 function sweep() {
+  const found = posts();
+  if ((found.length > 0) !== reported) {
+    reported = found.length > 0;
+    browser.runtime.sendMessage({ type: "found", found: reported });
+  }
   if (!inlineOn) return;
-  for (const p of posts()) if (p.mount) attach(p.mount, p);
+  for (const p of found) if (p.mount) attach(p.mount, p);
 }
 
 let queued = 0;

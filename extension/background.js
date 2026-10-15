@@ -42,3 +42,15 @@ browser.runtime.onMessage.addListener(async ({ api }) => {
   if (api.method === "POST" && api.path === "/jobs" && !r.offline) trackBadge();
   return r;
 });
+
+const ICON_ON = { 16: "icons/16.png", 32: "icons/32.png", 48: "icons/48.png" };
+const ICON_OFF = { 16: "icons/off-16.png", 32: "icons/off-32.png", 48: "icons/off-48.png" };
+const setIcon = (tabId, found) => browser.action.setIcon({ tabId, path: found ? ICON_ON : ICON_OFF }).catch(() => {});
+
+browser.runtime.onMessage.addListener((msg, sender) => {
+  if (msg.type === "found" && sender.tab) setIcon(sender.tab.id, msg.found);
+});
+
+browser.tabs.onUpdated.addListener((tabId, { status }) => {
+  if (status === "loading") setIcon(tabId, false);
+});
