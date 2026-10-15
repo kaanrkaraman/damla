@@ -15,6 +15,7 @@ interface State {
   selecting: boolean;
   selected: Set<string>;
   host: string;
+  scanned: boolean;
   pending: Set<string>;
   about: About | null;
   inline: boolean;
@@ -48,6 +49,7 @@ const S: State = {
   selecting: false,
   selected: new Set(),
   host: "",
+  scanned: false,
   pending: new Set(),
   about: null,
   inline: true,
@@ -300,6 +302,7 @@ function itemList(): HTMLElement {
 }
 
 function pageView(): HTMLElement {
+  if (!S.scanned) return h("main");
   return h("main", {}, compatibilityWarning(), elsewhereSection(), contextBar(), itemList(), actionBar());
 }
 
@@ -526,7 +529,7 @@ async function poll(): Promise<void> {
   if (S.jobs.some(isActive)) pollTimer = window.setTimeout(() => void poll(), POLL_MS);
 }
 
-async function init(): Promise<void> {
+async function scanPage(): Promise<void> {
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
   try {
     if (tab?.url && tab.id !== undefined) {
@@ -536,7 +539,13 @@ async function init(): Promise<void> {
   } catch {
     S.items = [];
   }
-  await Promise.all([poll(), loadAbout()]);
+  S.scanned = true;
+  render();
+}
+
+async function init(): Promise<void> {
+  render();
+  await Promise.all([scanPage(), poll(), loadAbout()]);
   render();
 }
 
