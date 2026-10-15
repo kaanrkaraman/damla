@@ -4,6 +4,10 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+### Changed
+- The video list and Settings share one popup size.
+- The selected option in Settings is filled with the accent color.
+
 ## [0.7.1] - 2026-10-15
 
 ### Fixed
