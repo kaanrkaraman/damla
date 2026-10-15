@@ -35,7 +35,7 @@ ACTIVE = ("queued", "running")
 DEFAULTS = {
     "folder": str(HOME / "Downloads" / "Damla"),
     "quality": "best",
-    "codec": "compat",
+    "codec": "auto",
     "concurrent": 2,
     "by_site": False,
     "cookies": False,
@@ -86,10 +86,12 @@ def clean_settings(raw, base):
         out["quality"] = raw["quality"]
     if raw.get("concurrent") in (1, 2, 3, 4):
         out["concurrent"] = raw["concurrent"]
-    if raw.get("codec") in ("compat", "quality"):
+    if raw.get("codec") in ("auto", "compat"):
         out["codec"] = raw["codec"]
+    elif raw.get("codec") == "quality":
+        out["codec"] = "auto"
     elif isinstance(raw.get("compat"), bool):
-        out["codec"] = "compat" if raw["compat"] else "quality"
+        out["codec"] = "compat" if raw["compat"] else "auto"
     for key in ("by_site", "cookies", "reveal"):
         if isinstance(raw.get(key), bool):
             out[key] = raw[key]
@@ -214,6 +216,16 @@ threading.Thread(target=load_ytdlp_version, daemon=True).start()
 threading.Thread(target=check_updates, daemon=True).start()
 
 
+def has_av1_decoder() -> bool:
+    brand = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True).stdout
+    chip = re.search(r"Apple M(\d+)", brand)
+    return chip is not None and int(chip[1]) >= 3
+
+
+NATIVE_CODECS = {"h264": "avc", "hevc": "hvc|hev", **({"av1": "av01"} if has_av1_decoder() else {})}
+NATIVE_FORMAT = f"bv*[vcodec~='^({'|'.join(NATIVE_CODECS.values())})']+ba/bv*+ba/b"
+
+
 def command(job, s):
     cmd = [
         *YTDLP_CMD, "--no-playlist", "--no-warnings", "-q", "--progress", "--newline",
@@ -222,14 +234,15 @@ def command(job, s):
         "--print", "after_move:filepath",
     ]
     quality = s["quality"]
-    compat = s["codec"] == "compat"
     if quality == "audio":
-        cmd += ["-x", "--audio-format", "m4a" if compat else "best"]
+        cmd += ["-x", "--audio-format", "m4a"]
     else:
         res = "res" if quality == "best" else f"res:{QUALITY[quality]}"
-        cmd += ["-S", f"vcodec:h264,{res},acodec:aac" if compat else res]
-        if compat:
-            cmd += ["--merge-output-format", "mp4"]
+        if s["codec"] == "compat":
+            cmd += ["-S", f"vcodec:h264,{res},acodec:aac"]
+        else:
+            cmd += ["-f", NATIVE_FORMAT, "-S", f"{res},vcodec,acodec:aac"]
+        cmd += ["--merge-output-format", "mp4"]
     if s["cookies"]:
         cmd += ["--cookies-from-browser", "safari"]
     folder = Path(s["folder"])
@@ -251,8 +264,8 @@ def h264_encoder():
     return ["-c:v", "h264_videotoolbox", "-b:v", "10M"]
 
 
-def ensure_quicktime(job, path):
-    if video_codec(path) in ("h264", "hevc", ""):
+def ensure_playable(job, path):
+    if video_codec(path) in (*NATIVE_CODECS, ""):
         return path
     with LOCK:
         job["msg"] = "@converting"
@@ -300,8 +313,8 @@ def run(job, s):
                 path = line
         err = proc.stderr.read().strip().splitlines()
         code = proc.wait()
-        if code == 0 and path and s["codec"] == "compat" and s["quality"] != "audio":
-            path = ensure_quicktime(job, path)
+        if code == 0 and path and s["quality"] != "audio":
+            path = ensure_playable(job, path)
     with LOCK:
         job.pop("proc", None)
         if job["state"] != "cancelled":
