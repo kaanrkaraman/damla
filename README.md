@@ -12,10 +12,27 @@ Damla is a Safari extension plus a small background app that runs [yt-dlp](https
 
 ### Chrome
 
-The Damla app from step 2 must be installed and running; the Chrome extension talks to the same local helper.
+The Damla app from steps 1 and 2 must be installed and running; the Chrome extension talks to the same local helper and cannot download anything on its own.
 
-1. Build the extension: `npm ci && npm run build`.
-2. Open `chrome://extensions`, turn on Developer mode, click "Load unpacked" and choose `extension/dist`.
+The Chrome extension is not in the Chrome Web Store yet, so you build it yourself:
+
+1. Install [Node.js](https://nodejs.org) 22.18 or later. Check with `node --version` in Terminal.
+2. Get the source: `git clone https://github.com/kaanrkaraman/damla.git`, or on GitHub click Code › Download ZIP and unzip it.
+3. In Terminal, go into the folder and build the extension:
+
+   ```sh
+   cd damla
+   npm ci
+   npm run build
+   ```
+
+   This creates `extension/dist`.
+4. Open `chrome://extensions`, turn on Developer mode (top right), click "Load unpacked" and choose the `extension/dist` folder.
+5. Open a video on Instagram, X, Facebook or YouTube and click the download button on the video, or the Damla icon in the toolbar.
+
+To update, get the new source (`git pull`, or download the ZIP again), run `npm ci` and `npm run build` again, then click the reload button on Damla in `chrome://extensions`.
+
+If downloads stop right after you click, check that the Damla app is running and up to date.
 
 Requires macOS 14 or later on Apple Silicon. Available in English, Türkçe and Deutsch. The app is signed with a Developer ID and notarized by Apple. It updates itself (Sparkle) and keeps yt-dlp current.
 
