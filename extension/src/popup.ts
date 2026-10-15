@@ -34,7 +34,6 @@ interface RowSpec {
 const RING_LEN = 2 * Math.PI * 11;
 const REQUIRED_API = 1;
 const RELEASES_URL = "https://github.com/kaanrkaraman/damla/releases/tag";
-const MIN_SETTINGS_HEIGHT = 530;
 const POLL_MS = 1000;
 const MINUTE = 60;
 const HOUR = 3600;
@@ -503,9 +502,6 @@ async function loadAbout(): Promise<void> {
 }
 
 async function openSettings(): Promise<void> {
-  // Settings keep the size of the list so the popup does not jump when switching views.
-  const app = appRoot();
-  app.style.blockSize = `${Math.max(app.offsetHeight, MIN_SETTINGS_HEIGHT)}px`;
   S.view = "settings";
   S.selecting = false;
   render();
@@ -516,7 +512,6 @@ async function openSettings(): Promise<void> {
 }
 
 function closeSettings(): void {
-  appRoot().style.removeProperty("block-size");
   S.view = "list";
   render();
 }
