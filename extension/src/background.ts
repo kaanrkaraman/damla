@@ -1,24 +1,11 @@
-import type { BackgroundMessage, Reply } from "./types";
+import { request } from "./helper";
+import type { BackgroundMessage } from "./types";
 import { isActive } from "./types";
 
-const HELPER = "http://127.0.0.1:7560";
 const POLL_MS = 700;
 
 const ICON_ON = { 16: "icons/16.png", 32: "icons/32.png", 48: "icons/48.png" };
 const ICON_OFF = { 16: "icons/off-16.png", 32: "icons/off-32.png", 48: "icons/off-48.png" };
-
-async function request(method: string, path: string, body?: unknown): Promise<Reply> {
-  try {
-    const response = await fetch(HELPER + path, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
-    return (await response.json()) as Reply;
-  } catch {
-    return { offline: true };
-  }
-}
 
 let tracking = false;
 

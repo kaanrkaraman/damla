@@ -45,10 +45,10 @@ def check_versions(errors: list[str]) -> str:
 
 def check_contract(errors: list[str]) -> None:
     server = read(SERVER)
-    background = read(SOURCES / "background.ts")
+    helper_client = read(SOURCES / "helper.ts")
     popup = read(SOURCES / "popup.ts")
     server_port = find(r"^PORT = (\d+)", server, "server.py")
-    extension_port = find(r"127\.0\.0\.1:(\d+)", background, "background.ts")
+    extension_port = find(r"127\.0\.0\.1:(\d+)", helper_client, "helper.ts")
     if server_port != extension_port:
         errors.append(f"port: helper uses {server_port}, extension uses {extension_port}")
     server_api = find(r"^API_VERSION = (\d+)", server, "server.py")
