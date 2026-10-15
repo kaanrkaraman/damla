@@ -8,7 +8,6 @@
   --fill-2: color-mix(in srgb, CanvasText 14%, transparent);
   --raised: light-dark(#fff, rgb(99 99 102));
   --red: light-dark(rgb(200 0 20), rgb(255 105 97));
-  --green: light-dark(rgb(52 199 89), rgb(48 209 88));
   --badge: light-dark(rgb(255 59 48), rgb(255 69 58));
   --font: -apple-system, system-ui, sans-serif;
 }
@@ -19,7 +18,6 @@
     --label-2: -apple-system-secondary-label;
     --label-3: -apple-system-tertiary-label;
     --separator: -apple-system-separator;
-    --green: -apple-system-green;
     --badge: -apple-system-red;
   }
 }
@@ -256,7 +254,6 @@ svg.ic { inline-size: 16px; block-size: 16px; fill: none; stroke: currentColor; 
 .set-row .desc { font-size: 0.6875rem; color: var(--label-2); }
 .set-row .value { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--label-2); }
 .set-row button, .set-row select { font: inherit; }
-.set-row input[type="checkbox"] { accent-color: var(--green); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; }
