@@ -1,0 +1,12 @@
+Damla bundles third-party software.
+
+yt-dlp (Unlicense)            https://github.com/yt-dlp/yt-dlp
+CPython (PSF License)         https://www.python.org/
+FFmpeg (LGPL v2.1 or later)   https://ffmpeg.org/
+
+FFmpeg is built from the unmodified upstream source with:
+  --disable-gpl --disable-nonfree --disable-autodetect --disable-shared --enable-static
+  --enable-videotoolbox --enable-audiotoolbox
+Source: https://ffmpeg.org/releases/ffmpeg-@FFMPEG_VERSION@.tar.xz
+The exact build script is packaging/build-ffmpeg.sh in the Damla repository.
+The LGPL text is in ffmpeg.LICENSE next to this file.

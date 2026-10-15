@@ -1,0 +1,14 @@
+.DS_Store
+xcuserdata/
+packaging/cache/
+packaging/build/
+__pycache__/
+*.pyc
+*.csr
+*.cer
+*.p12
+*.p8
+*.key
+*.pem
+*.mobileprovision
+appcast.xml

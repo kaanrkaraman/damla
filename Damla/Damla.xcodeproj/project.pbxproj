@@ -1,0 +1,590 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8C0C8AD530811E3A00DAFC2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0C8AD430811E3A00DAFC2A /* AppDelegate.swift */; };
+		8C0C8AE630811E3B00DAFC2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8AE530811E3B00DAFC2A /* Assets.xcassets */; };
+		8C0C8AED30811E3B00DAFC2A /* Damla Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8C0C8AEC30811E3B00DAFC2A /* Damla Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8C0C8AF230811E3B00DAFC2A /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0C8AF130811E3B00DAFC2A /* SafariWebExtensionHandler.swift */; };
+		8C0C8B0530811E3C00DAFC2A /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8AFE30811E3C00DAFC2A /* popup.js */; };
+		8C0C8B0630811E3C00DAFC2A /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8AFF30811E3C00DAFC2A /* background.js */; };
+		8C0C8B0730811E3C00DAFC2A /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B0030811E3C00DAFC2A /* popup.html */; };
+		8C0C8B0830811E3C00DAFC2A /* icons in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B0130811E3C00DAFC2A /* icons */; };
+		8C0C8B0930811E3C00DAFC2A /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B0230811E3C00DAFC2A /* manifest.json */; };
+		8C0C8B0A30811E3C00DAFC2A /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B0330811E3C00DAFC2A /* popup.css */; };
+		8C0C8B0B30811E3C00DAFC2A /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B0430811E3C00DAFC2A /* content.js */; };
+		8C0C8B1230811E3C00DAFC2A /* i18n.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B1130811E3C00DAFC2A /* i18n.js */; };
+		8C0C8B1430811E3C00DAFC2A /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B1330811E3C00DAFC2A /* _locales */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8C0C8AEE30811E3B00DAFC2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8C0C8AC930811E3A00DAFC2A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8C0C8AEB30811E3B00DAFC2A;
+			remoteInfo = "Damla Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8C0C8AF930811E3B00DAFC2A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				8C0C8AED30811E3B00DAFC2A /* Damla Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8C0C8AD130811E3A00DAFC2A /* Damla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Damla.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C0C8AD430811E3A00DAFC2A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8C0C8AE530811E3B00DAFC2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8C0C8AE730811E3B00DAFC2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C0C8AEC30811E3B00DAFC2A /* Damla Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Damla Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C0C8AF130811E3B00DAFC2A /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		8C0C8AF330811E3B00DAFC2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C0C8AFE30811E3C00DAFC2A /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = popup.js; path = ../../extension/popup.js; sourceTree = "<group>"; };
+		8C0C8AFF30811E3C00DAFC2A /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../extension/background.js; sourceTree = "<group>"; };
+		8C0C8B0030811E3C00DAFC2A /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../extension/popup.html; sourceTree = "<group>"; };
+		8C0C8B0130811E3C00DAFC2A /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../extension/icons; sourceTree = "<group>"; };
+		8C0C8B0230811E3C00DAFC2A /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../extension/manifest.json; sourceTree = "<group>"; };
+		8C0C8B0330811E3C00DAFC2A /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = popup.css; path = ../../extension/popup.css; sourceTree = "<group>"; };
+		8C0C8B0430811E3C00DAFC2A /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = content.js; path = ../../extension/content.js; sourceTree = "<group>"; };
+		8C0C8B1130811E3C00DAFC2A /* i18n.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = i18n.js; path = ../../extension/i18n.js; sourceTree = "<group>"; };
+		8C0C8B1330811E3C00DAFC2A /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = _locales; path = ../../extension/_locales; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8C0C8ACE30811E3A00DAFC2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		8C0C8AE930811E3B00DAFC2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8C0C8AC830811E3A00DAFC2A = {
+			isa = PBXGroup;
+			children = (
+				8C0C8AD330811E3A00DAFC2A /* Damla */,
+				8C0C8AF030811E3B00DAFC2A /* Damla Extension */,
+				8C0C8AD230811E3A00DAFC2A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8C0C8AD230811E3A00DAFC2A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8C0C8AD130811E3A00DAFC2A /* Damla.app */,
+				8C0C8AEC30811E3B00DAFC2A /* Damla Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8C0C8AD330811E3A00DAFC2A /* Damla */ = {
+			isa = PBXGroup;
+			children = (
+				8C0C8AD430811E3A00DAFC2A /* AppDelegate.swift */,
+				8C0C8AE530811E3B00DAFC2A /* Assets.xcassets */,
+				8C0C8AE730811E3B00DAFC2A /* Info.plist */,
+			);
+			path = Damla;
+			sourceTree = "<group>";
+		};
+		8C0C8AF030811E3B00DAFC2A /* Damla Extension */ = {
+			isa = PBXGroup;
+			children = (
+				8C0C8AFD30811E3C00DAFC2A /* Resources */,
+				8C0C8AF130811E3B00DAFC2A /* SafariWebExtensionHandler.swift */,
+				8C0C8AF330811E3B00DAFC2A /* Info.plist */,
+			);
+			path = "Damla Extension";
+			sourceTree = "<group>";
+		};
+		8C0C8AFD30811E3C00DAFC2A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8C0C8AFE30811E3C00DAFC2A /* popup.js */,
+				8C0C8AFF30811E3C00DAFC2A /* background.js */,
+				8C0C8B0030811E3C00DAFC2A /* popup.html */,
+				8C0C8B0130811E3C00DAFC2A /* icons */,
+				8C0C8B0230811E3C00DAFC2A /* manifest.json */,
+				8C0C8B0330811E3C00DAFC2A /* popup.css */,
+				8C0C8B1130811E3C00DAFC2A /* i18n.js */,
+				8C0C8B1330811E3C00DAFC2A /* _locales */,
+				8C0C8B0430811E3C00DAFC2A /* content.js */,
+			);
+			name = Resources;
+			path = "Damla Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8C0C8AD030811E3A00DAFC2A /* Damla */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C0C8AFA30811E3B00DAFC2A /* Build configuration list for PBXNativeTarget "Damla" */;
+			buildPhases = (
+				8C0C8ACD30811E3A00DAFC2A /* Sources */,
+				8C0C8ACE30811E3A00DAFC2A /* Frameworks */,
+				8C0C8ACF30811E3A00DAFC2A /* Resources */,
+				8C0C8AF930811E3B00DAFC2A /* Embed Foundation Extensions */,
+				8C0C8B1030811E3C00DAFC2A /* Embed Sparkle */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8C0C8AEF30811E3B00DAFC2A /* PBXTargetDependency */,
+			);
+			name = Damla;
+			productName = Damla;
+			productReference = 8C0C8AD130811E3A00DAFC2A /* Damla.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8C0C8AEB30811E3B00DAFC2A /* Damla Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C0C8AF630811E3B00DAFC2A /* Build configuration list for PBXNativeTarget "Damla Extension" */;
+			buildPhases = (
+				8C0C8AE830811E3B00DAFC2A /* Sources */,
+				8C0C8AE930811E3B00DAFC2A /* Frameworks */,
+				8C0C8AEA30811E3B00DAFC2A /* Resources */,
+			);
+			buildRules = (
+			);
+			name = "Damla Extension";
+			productName = "Damla Extension";
+			productReference = 8C0C8AEC30811E3B00DAFC2A /* Damla Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8C0C8AC930811E3A00DAFC2A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					8C0C8AD030811E3A00DAFC2A = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					8C0C8AEB30811E3B00DAFC2A = {
+						CreatedOnToolsVersion = 27.0;
+					};
+				};
+			};
+			buildConfigurationList = 8C0C8ACC30811E3A00DAFC2A /* Build configuration list for PBXProject "Damla" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8C0C8AC830811E3A00DAFC2A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8C0C8AD230811E3A00DAFC2A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8C0C8AD030811E3A00DAFC2A /* Damla */,
+				8C0C8AEB30811E3B00DAFC2A /* Damla Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8C0C8ACF30811E3A00DAFC2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				8C0C8AE630811E3B00DAFC2A /* Assets.xcassets in Resources */,
+			);
+		};
+		8C0C8AEA30811E3B00DAFC2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				8C0C8B0630811E3C00DAFC2A /* background.js in Resources */,
+				8C0C8B0830811E3C00DAFC2A /* icons in Resources */,
+				8C0C8B0A30811E3C00DAFC2A /* popup.css in Resources */,
+				8C0C8B1230811E3C00DAFC2A /* i18n.js in Resources */,
+				8C0C8B1430811E3C00DAFC2A /* _locales in Resources */,
+				8C0C8B0930811E3C00DAFC2A /* manifest.json in Resources */,
+				8C0C8B0730811E3C00DAFC2A /* popup.html in Resources */,
+				8C0C8B0B30811E3C00DAFC2A /* content.js in Resources */,
+				8C0C8B0530811E3C00DAFC2A /* popup.js in Resources */,
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8C0C8B1030811E3C00DAFC2A /* Embed Sparkle */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Sparkle";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nSRC=\"$SRCROOT/../packaging/cache/Sparkle/Sparkle.framework\"\n[ -d \"$SRC\" ] || { echo \"error: run packaging/fetch-tools.sh first\" >&2; exit 1; }\nDST=\"$BUILT_PRODUCTS_DIR/$FRAMEWORKS_FOLDER_PATH\"\nmkdir -p \"$DST\"\nrsync -a --delete \"$SRC\" \"$DST/\"\nrm -rf \"$DST/Sparkle.framework/Versions/B/XPCServices\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8C0C8ACD30811E3A00DAFC2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				8C0C8AD530811E3A00DAFC2A /* AppDelegate.swift in Sources */,
+			);
+		};
+		8C0C8AE830811E3B00DAFC2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				8C0C8AF230811E3B00DAFC2A /* SafariWebExtensionHandler.swift in Sources */,
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8C0C8AEF30811E3B00DAFC2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8C0C8AEB30811E3B00DAFC2A /* Damla Extension */;
+			targetProxy = 8C0C8AEE30811E3B00DAFC2A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8C0C8AF430811E3B00DAFC2A /* Debug configuration for PBXProject "Damla" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8C0C8AF530811E3B00DAFC2A /* Release configuration for PBXProject "Damla" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		8C0C8AF730811E3B00DAFC2A /* Debug configuration for PBXNativeTarget "Damla Extension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0.4.0;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Damla Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Damla Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.4.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaan.damla.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8C0C8AF830811E3B00DAFC2A /* Release configuration for PBXNativeTarget "Damla Extension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0.4.0;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Damla Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Damla Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 0.4.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaan.damla.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8C0C8AFB30811E3B00DAFC2A /* Debug configuration for PBXNativeTarget "Damla" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0.4.0;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Damla/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Damla";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_LSUIElement = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../packaging/cache/Sparkle";
+				OTHER_LDFLAGS = "-framework Sparkle";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.4.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaan.damla;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8C0C8AFC30811E3B00DAFC2A /* Release configuration for PBXNativeTarget "Damla" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0.4.0;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Damla/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Damla";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_LSUIElement = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../packaging/cache/Sparkle";
+				OTHER_LDFLAGS = "-framework Sparkle";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive = NO;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.4.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaan.damla;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8C0C8ACC30811E3A00DAFC2A /* Build configuration list for PBXProject "Damla" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C0C8AF430811E3B00DAFC2A /* Debug configuration for PBXProject "Damla" */,
+				8C0C8AF530811E3B00DAFC2A /* Release configuration for PBXProject "Damla" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		8C0C8AF630811E3B00DAFC2A /* Build configuration list for PBXNativeTarget "Damla Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C0C8AF730811E3B00DAFC2A /* Debug configuration for PBXNativeTarget "Damla Extension" */,
+				8C0C8AF830811E3B00DAFC2A /* Release configuration for PBXNativeTarget "Damla Extension" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		8C0C8AFA30811E3B00DAFC2A /* Build configuration list for PBXNativeTarget "Damla" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C0C8AFB30811E3B00DAFC2A /* Debug configuration for PBXNativeTarget "Damla" */,
+				8C0C8AFC30811E3B00DAFC2A /* Release configuration for PBXNativeTarget "Damla" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8C0C8AC930811E3A00DAFC2A /* Project object */;
+	validationLevel = 1;
+}
