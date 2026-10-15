@@ -42,7 +42,7 @@ private final class HelperSupervisor {
         guard !stopped, let python = Self.python, let resources = Bundle.main.resourceURL else { return }
         let process = Process()
         process.executableURL = python
-        process.arguments = ["-I", resources.appendingPathComponent("helper/server.py").path]
+        process.arguments = ["-B", "-I", resources.appendingPathComponent("helper/server.py").path]
         if let log = Self.openLog() {
             process.standardOutput = log
             process.standardError = log
@@ -53,7 +53,7 @@ private final class HelperSupervisor {
         do {
             try process.run()
             self.process = process
-            startedAt = Date()
+            startedAt = .now
         } catch {
             scheduleRestart()
         }
@@ -66,13 +66,14 @@ private final class HelperSupervisor {
 
     private func didExit() {
         process = nil
-        delay = Date().timeIntervalSince(startedAt) > Self.healthyRunTime ? Self.baseDelay : min(delay * 2, Self.maxDelay)
+        delay = Date.now.timeIntervalSince(startedAt) > Self.healthyRunTime ? Self.baseDelay : min(delay * 2, Self.maxDelay)
         scheduleRestart()
     }
 
     private func scheduleRestart() {
         guard !stopped else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+        Task { [weak self, delay] in
+            try? await Task.sleep(for: .seconds(delay))
             self?.start()
         }
     }
@@ -202,7 +203,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     accept: String(localized: "extension.open"),
                     decline: String(localized: "common.notNow")
                 )
-                if open { try? await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID) }
+                guard open else { return }
+                do {
+                    try await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID)
+                } catch {
+                    Dialog.confirm(String(localized: "extension.title"), detail: error.localizedDescription, accept: String(localized: "common.ok"))
+                }
             }
         }
     }

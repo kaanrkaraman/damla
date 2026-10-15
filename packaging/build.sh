@@ -42,6 +42,7 @@ LIBPY="$(echo "$PY"/lib/python3.*)"
 rm -rf "$LIBPY/test" "$LIBPY/idlelib" "$LIBPY/tkinter" "$LIBPY/turtledemo" "$LIBPY/ensurepip" "$LIBPY/site-packages/pip"* "$LIBPY"/config-*
 rm -f "$LIBPY"/lib-dynload/_tkinter* "$LIBPY"/lib-dynload/_test* "$PY"/bin/pip* "$PY"/bin/idle* "$PY"/bin/2to3* "$PY"/bin/pydoc*
 find "$PY" -name __pycache__ -prune -exec rm -rf {} +
+"$PY/bin/python3" -B -m compileall -q -j 0 --invalidation-mode unchecked-hash "$LIBPY"
 
 cp "$HERE/cache/yt-dlp" "$HERE/cache/ffmpeg" "$RES/bin/"
 chmod +x "$RES/bin/yt-dlp" "$RES/bin/ffmpeg"
@@ -69,6 +70,11 @@ else
   sign "$APP"
 fi
 codesign --verify --deep --strict --verbose=1 "$APP"
+
+echo "== Smoke test"
+PYTHONDONTWRITEBYTECODE=1 "$PY/bin/python3" -B -I -c "import http.server, json, shutil, ssl, subprocess, threading, urllib.request, uuid"
+PYTHONDONTWRITEBYTECODE=1 "$PY/bin/python3" -B -I "$RES/bin/yt-dlp" --version
+codesign --verify --deep --strict "$APP"
 
 if [ -n "$NOTARY_PROFILE" ] && [ "$SIGN_ID" != "-" ]; then
   echo "== Notarizing the app"

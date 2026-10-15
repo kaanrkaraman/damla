@@ -44,7 +44,7 @@ DEFAULTS = {
 }
 QUALITY = {"best": None, "1080": 1080, "720": 720, "audio": None}
 
-ENV = {**os.environ, "PATH": ":".join([str(USER_BIN), str(BUNDLE_BIN), "/opt/homebrew/bin", "/usr/local/bin", os.environ.get("PATH", "")])}
+ENV = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "PATH": ":".join([str(USER_BIN), str(BUNDLE_BIN), "/opt/homebrew/bin", "/usr/local/bin", os.environ.get("PATH", "")])}
 
 
 def resolve_ytdlp():
