@@ -6,7 +6,7 @@ CACHE="$HERE/cache"
 WORK="$HERE/build/ffmpeg-src"
 
 [ -f "$CACHE/ffmpeg-src.tar.xz" ] || "$HERE/fetch-tools.sh"
-[ -x "$CACHE/ffmpeg" ] && { echo "ffmpeg hazır: $CACHE/ffmpeg"; exit 0; }
+[ -x "$CACHE/ffmpeg" ] && { echo "ffmpeg ready: $CACHE/ffmpeg"; exit 0; }
 
 rm -rf "$WORK"
 mkdir -p "$WORK"
@@ -26,4 +26,4 @@ strip ffmpeg
 cp ffmpeg "$CACHE/ffmpeg"
 cp COPYING.LGPLv2.1 "$CACHE/ffmpeg.LICENSE"
 ./ffmpeg -hide_banner -buildconf | grep -E "enable|disable" | tr -s ' ' > "$CACHE/ffmpeg.buildconf"
-echo "ffmpeg derlendi: $CACHE/ffmpeg"
+echo "ffmpeg built: $CACHE/ffmpeg"

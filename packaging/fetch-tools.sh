@@ -14,7 +14,7 @@ SPARKLE_VERSION="2.10.0"
 fetch() {
   local url="$1" out="$2"
   if [ ! -f "$CACHE/$out" ]; then
-    echo "indiriliyor: $out"
+    echo "downloading: $out"
     curl -fL --retry 3 -o "$CACHE/$out.part" "$url"
     mv "$CACHE/$out.part" "$CACHE/$out"
   fi
@@ -23,9 +23,9 @@ fetch() {
   want="$(grep " $out\$" "$HERE/checksums.txt" 2>/dev/null | cut -d' ' -f1 || true)"
   if [ -z "$want" ]; then
     echo "$have  $out" | sed 's/  / /' >> "$HERE/checksums.txt"
-    echo "sha256 kaydedildi: $out"
+    echo "sha256 recorded: $out"
   elif [ "$want" != "$have" ]; then
-    echo "SHA256 UYUŞMUYOR: $out" >&2
+    echo "SHA256 MISMATCH: $out" >&2
     exit 1
   fi
 }
@@ -38,4 +38,4 @@ if [ ! -d "$CACHE/Sparkle" ]; then
   mkdir -p "$CACHE/Sparkle"
   tar -xJf "$CACHE/sparkle.tar.xz" -C "$CACHE/Sparkle"
 fi
-echo "araçlar hazır: $CACHE"
+echo "tools ready: $CACHE"

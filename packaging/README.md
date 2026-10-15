@@ -17,12 +17,12 @@ One-time setup:
 Release:
 
 ```sh
-python3 scripts/bump_version.py 0.5.0
+python3 scripts/bump_version.py 0.5.0   # edit the new section in CHANGELOG.md, then commit
 SIGN_ID="Developer ID Application: <Name> (<TEAM_ID>)" NOTARY_PROFILE=damla-notary ./packaging/release.sh
 PUBLISH=1 SIGN_ID=... NOTARY_PROFILE=... ./packaging/release.sh   # also runs gh release create
 ```
 
-`release.sh` builds, signs, notarizes, writes `appcast.xml` (signed with the EdDSA key) and, with `PUBLISH=1`, uploads the DMG and `appcast.xml` to the GitHub release. The app reads `https://github.com/<repo>/releases/latest/download/appcast.xml`.
+`release.sh` runs `scripts/check.py`, builds, signs, notarizes, writes `appcast.xml` (signed with the EdDSA key, release notes taken from the matching `CHANGELOG.md` section) and, with `PUBLISH=1`, uploads the DMG and `appcast.xml` to the GitHub release with the same notes. The notes appear in the Sparkle update dialog. The app reads `https://github.com/<repo>/releases/latest/download/appcast.xml`.
 
 ## How updates work
 

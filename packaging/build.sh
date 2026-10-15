@@ -10,17 +10,17 @@ NOTARY_PROFILE="${NOTARY_PROFILE:-}"
 APP="$OUT/Damla.app"
 RES="$APP/Contents/Resources"
 
-if [ "$SIGN_ID" = "-" ]; then TS="--timestamp=none"; else TS="--timestamp"; fi
+if [ "$SIGN_ID" = "-" ]; then TIMESTAMP="--timestamp=none"; else TIMESTAMP="--timestamp"; fi
 
 sign() {
   local target="$1"; shift
-  codesign --force --sign "$SIGN_ID" $TS --options runtime "$@" "$target"
+  codesign --force --sign "$SIGN_ID" "$TIMESTAMP" --options runtime "$@" "$target"
 }
 
 "$HERE/fetch-tools.sh"
 "$HERE/build-ffmpeg.sh"
 
-echo "== Xcode Release derlemesi"
+echo "== Xcode Release build"
 rm -rf "$OUT/dd"
 xcodebuild -project "$ROOT/Damla/Damla.xcodeproj" -scheme Damla -configuration Release \
   -derivedDataPath "$OUT/dd" CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" build | tail -3
@@ -28,7 +28,7 @@ xcodebuild -project "$ROOT/Damla/Damla.xcodeproj" -scheme Damla -configuration R
 LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 "$LSREGISTER" -u "$OUT/dd/Build/Products/Release/Damla.app" 2>/dev/null || true
 
-echo "== Paket birleştirme"
+echo "== Assembling the app"
 rm -rf "$APP"
 cp -R "$OUT/dd/Build/Products/Release/Damla.app" "$APP"
 mkdir -p "$RES/helper" "$RES/bin" "$RES/licenses"
@@ -49,7 +49,7 @@ cp "$HERE/cache/ffmpeg.LICENSE" "$HERE/cache/ffmpeg.buildconf" "$RES/licenses/"
 FFMPEG_VERSION="$(grep '^FFMPEG_VERSION=' "$HERE/fetch-tools.sh" | cut -d'"' -f2)"
 sed "s/@FFMPEG_VERSION@/$FFMPEG_VERSION/" "$HERE/app/NOTICE.txt" > "$RES/licenses/NOTICE.txt"
 
-echo "== İmzalama ($SIGN_ID)"
+echo "== Signing ($SIGN_ID)"
 while IFS= read -r f; do
   if file -b "$f" | grep -q "Mach-O"; then
     case "$(basename "$f")" in
@@ -71,7 +71,7 @@ fi
 codesign --verify --deep --strict --verbose=1 "$APP"
 
 if [ -n "$NOTARY_PROFILE" ] && [ "$SIGN_ID" != "-" ]; then
-  echo "== Uygulama notarization"
+  echo "== Notarizing the app"
   APPZIP="$OUT/Damla-app.zip"
   rm -f "$APPZIP"
   ditto -c -k --keepParent "$APP" "$APPZIP"
@@ -91,10 +91,10 @@ hdiutil create -volname "Damla" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/de
 [ "$SIGN_ID" = "-" ] || codesign --force --sign "$SIGN_ID" --timestamp "$DMG"
 
 if [ -n "$NOTARY_PROFILE" ] && [ "$SIGN_ID" != "-" ]; then
-  echo "== Notarization"
+  echo "== Notarizing the DMG"
   xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
   xcrun stapler staple "$DMG"
 else
-  echo "== Notarization atlandı (SIGN_ID ve NOTARY_PROFILE tanımlı değil)"
+  echo "== Notarization skipped (SIGN_ID and NOTARY_PROFILE not set)"
 fi
-echo "hazır: $DMG ($(du -h "$DMG" | cut -f1))"
+echo "ready: $DMG ($(du -h "$DMG" | cut -f1))"
