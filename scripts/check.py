@@ -31,7 +31,11 @@ def check_versions(errors: list[str]) -> str:
     project = read(PROJECT)
     marketing = set(re.findall(r"MARKETING_VERSION = ([^;]+);", project))
     build = set(re.findall(r"CURRENT_PROJECT_VERSION = ([^;]+);", project))
-    for label, found in (("manifest.json", {manifest}), ("MARKETING_VERSION", marketing), ("CURRENT_PROJECT_VERSION", build)):
+    for label, found in (
+        ("manifest.json", {manifest}),
+        ("MARKETING_VERSION", marketing),
+        ("CURRENT_PROJECT_VERSION", build),
+    ):
         if found != {version}:
             errors.append(f"version: VERSION is {version} but {label} is {sorted(found)}")
     if not re.search(rf"^## \[{re.escape(version)}\]", read(ROOT / "CHANGELOG.md"), re.MULTILINE):
@@ -60,7 +64,11 @@ def check_contract(errors: list[str]) -> None:
 
 
 def load_messages() -> dict[str, dict[str, dict]]:
-    return {folder.name: json.loads(read(folder / "messages.json")) for folder in sorted(LOCALES.iterdir()) if folder.is_dir()}
+    return {
+        folder.name: json.loads(read(folder / "messages.json"))
+        for folder in sorted(LOCALES.iterdir())
+        if folder.is_dir()
+    }
 
 
 def placeholders(entry: dict) -> set[str]:
@@ -73,7 +81,9 @@ def used_message_keys() -> set[str]:
     keys = set(re.findall(r"__MSG_(\w+)__", manifest))
     for source in sources:
         keys |= set(re.findall(r"""\bt\(\s*["'](\w+)["']""", source))
-        keys |= {f"{key}{suffix}" for key in re.findall(r"""\btn\(\s*["'](\w+)["']""", source) for suffix in PLURAL_SUFFIXES}
+        keys |= {
+            f"{key}{suffix}" for key in re.findall(r"""\btn\(\s*["'](\w+)["']""", source) for suffix in PLURAL_SUFFIXES
+        }
     return keys
 
 
@@ -90,15 +100,18 @@ def check_messages(errors: list[str]) -> None:
             errors.append(f"locales/{lang}: missing {sorted(missing)}")
         if extra:
             errors.append(f"locales/{lang}: unknown {sorted(extra)}")
-        for key in reference.keys() & table.keys():
-            if placeholders(reference[key]) != placeholders(table[key]):
-                errors.append(f"locales/{lang}: placeholders of {key} differ from {default}")
+        errors.extend(
+            f"locales/{lang}: placeholders of {key} differ from {default}"
+            for key in sorted(reference.keys() & table.keys())
+            if placeholders(reference[key]) != placeholders(table[key])
+        )
     used = used_message_keys()
-    for key in sorted(used - reference.keys()):
-        errors.append(f"locales: code uses undefined message {key}")
-    for key in sorted(reference.keys() - used):
-        if not key.startswith(DYNAMIC_PREFIXES):
-            errors.append(f"locales: message {key} is never used")
+    errors.extend(f"locales: code uses undefined message {key}" for key in sorted(used - reference.keys()))
+    errors.extend(
+        f"locales: message {key} is never used"
+        for key in sorted(reference.keys() - used)
+        if not key.startswith(DYNAMIC_PREFIXES)
+    )
 
 
 def check_manifest(errors: list[str]) -> None:
@@ -109,15 +122,18 @@ def check_manifest(errors: list[str]) -> None:
         referenced |= set(script["js"])
     popup = read(EXTENSION / "popup.html")
     referenced |= set(re.findall(r'(?:src|href)="([^"]+)"', popup))
-    for path in sorted(referenced):
-        exists = (EXTENSION / path).is_file() or (SOURCES / Path(path).with_suffix(".ts")).is_file()
-        if not exists:
-            errors.append(f"manifest: {path} has neither a static file nor a TypeScript entry point")
+    errors.extend(
+        f"manifest: {path} has neither a static file nor a TypeScript entry point"
+        for path in sorted(referenced)
+        if not (EXTENSION / path).is_file() and not (SOURCES / Path(path).with_suffix(".ts")).is_file()
+    )
     project = read(PROJECT)
     bundled = {Path(path).parts[0] for path in referenced} | {"_locales", "manifest.json"}
-    for name in sorted(bundled):
-        if f"../../extension/dist/{name}" not in project:
-            errors.append(f"xcodeproj: extension/dist/{name} is not bundled into the Safari extension")
+    errors.extend(
+        f"xcodeproj: extension/dist/{name} is not bundled into the Safari extension"
+        for name in sorted(bundled)
+        if f"../../extension/dist/{name}" not in project
+    )
 
 
 def check_catalog(errors: list[str]) -> None:
@@ -125,17 +141,19 @@ def check_catalog(errors: list[str]) -> None:
     if not catalog.is_file():
         return
     data = json.loads(read(catalog))
-    languages = set(messages for messages in load_messages())
+    languages = set(load_messages())
     for key, entry in data["strings"].items():
         missing = languages - entry.get("localizations", {}).keys()
         if missing:
             errors.append(f"Localizable.xcstrings: {key} lacks {sorted(missing)}")
     code = read(ROOT / "Damla" / "Damla" / "AppDelegate.swift")
-    used = set(re.findall(r'String\(localized: "([\w.]+)"', code)) | set(re.findall(r'NSLocalizedString\("([\w.]+)"', code))
-    for key in sorted(used - data["strings"].keys()):
-        errors.append(f"Localizable.xcstrings: code uses undefined string {key}")
-    for key in sorted(data["strings"].keys() - used):
-        errors.append(f"Localizable.xcstrings: string {key} is never used")
+    used = set(re.findall(r'String\(localized: "([\w.]+)"', code)) | set(
+        re.findall(r'NSLocalizedString\("([\w.]+)"', code)
+    )
+    errors.extend(
+        f"Localizable.xcstrings: code uses undefined string {key}" for key in sorted(used - data["strings"].keys())
+    )
+    errors.extend(f"Localizable.xcstrings: string {key} is never used" for key in sorted(data["strings"].keys() - used))
 
 
 def main() -> None:
