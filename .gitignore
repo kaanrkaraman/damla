@@ -12,3 +12,5 @@ __pycache__/
 *.pem
 *.mobileprovision
 appcast.xml
+node_modules/
+extension/dist/

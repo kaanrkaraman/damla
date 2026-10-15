@@ -1,0 +1,18 @@
+{
+  "name": "damla-extension",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-extension.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@types/firefox-webext-browser": "^143.0.1",
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}
