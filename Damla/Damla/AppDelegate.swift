@@ -6,14 +6,6 @@ import Sparkle
 private let extensionID = "com.kaan.damla.Extension"
 private let updateURLHost = "check-for-updates"
 
-private enum L {
-    static let turkish = Locale.preferredLanguages.first?.hasPrefix("tr") == true
-
-    static func t(_ tr: String, _ en: String) -> String {
-        turkish ? tr : en
-    }
-}
-
 private enum Dialog {
     @discardableResult
     static func confirm(_ message: String, detail: String, accept: String, decline: String? = nil) -> Bool {
@@ -116,19 +108,16 @@ private enum LoginItem {
 
     private static func register(_ service: SMAppService) {
         let allowed = Dialog.confirm(
-            L.t("Damla oturum açılınca arka planda başlasın mı?", "Start Damla when you log in?"),
-            detail: L.t(
-                "Damla, videoları indiren küçük bir yardımcıyı arka planda çalıştırır. Mac'inize girişte kendiliğinden açılmasına izin verirseniz Terminal'e gerek kalmaz. Sistem Ayarları › Genel › Giriş Öğeleri'nden istediğiniz zaman kapatabilirsiniz.",
-                "Damla runs a small helper in the background that downloads videos. Let it open automatically when you log in. You can turn it off any time in System Settings › General › Login Items."
-            ),
-            accept: L.t("Başlat", "Allow"),
-            decline: L.t("Şimdi değil", "Not Now")
+            String(localized: "login.title"),
+            detail: String(localized: "login.detail"),
+            accept: String(localized: "login.allow"),
+            decline: String(localized: "common.notNow")
         )
         guard allowed else { return }
         do {
             try service.register()
         } catch {
-            Dialog.confirm(L.t("Başlatılamadı", "Couldn't turn it on"), detail: error.localizedDescription, accept: L.t("Tamam", "OK"))
+            Dialog.confirm(String(localized: "login.failed"), detail: error.localizedDescription, accept: String(localized: "common.ok"))
             return
         }
         if service.status == .requiresApproval { askApproval() }
@@ -136,10 +125,10 @@ private enum LoginItem {
 
     private static func askApproval() {
         let open = Dialog.confirm(
-            L.t("Sistem Ayarları'nda izin verin", "Allow it in System Settings"),
-            detail: L.t("Giriş Öğeleri'nde “Damla” için arka plan iznini açın.", "Turn on Damla under Login Items."),
-            accept: L.t("Ayarları Aç", "Open Settings"),
-            decline: L.t("Şimdi değil", "Not Now")
+            String(localized: "approval.title"),
+            detail: String(localized: "approval.detail"),
+            accept: String(localized: "approval.open"),
+            decline: String(localized: "common.notNow")
         )
         if open { SMAppService.openSystemSettingsLoginItems() }
     }
@@ -170,9 +159,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard !runsFromDiskImage else {
             NSApp.activate(ignoringOtherApps: true)
             Dialog.confirm(
-                L.t("Önce Applications klasörüne taşıyın", "Move it to Applications first"),
-                detail: L.t("Damla'yı Uygulamalar klasörüne sürükleyip oradan açın.", "Drag Damla to your Applications folder and open it from there."),
-                accept: L.t("Tamam", "OK")
+                String(localized: "dmg.title"),
+                detail: String(localized: "dmg.detail"),
+                accept: String(localized: "common.ok")
             )
             NSApp.terminate(nil)
             return
@@ -208,13 +197,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Task { @MainActor in
                 guard let state, !state.isEnabled else { return }
                 let open = Dialog.confirm(
-                    L.t("Eklentiyi Safari'de açın", "Turn on the extension in Safari"),
-                    detail: L.t(
-                        "Safari Ayarları › Uzantılar bölümünde “Damla”yı etkinleştirin ve kullandığınız sitelere erişim izni verin.",
-                        "In Safari Settings › Extensions, enable Damla and allow it on the sites you use."
-                    ),
-                    accept: L.t("Safari Ayarlarını Aç", "Open Safari Settings"),
-                    decline: L.t("Şimdi değil", "Not Now")
+                    String(localized: "extension.title"),
+                    detail: String(localized: "extension.detail"),
+                    accept: String(localized: "extension.open"),
+                    decline: String(localized: "common.notNow")
                 )
                 if open { try? await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID) }
             }
@@ -225,13 +211,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
         let alert = NSAlert()
-        alert.messageText = L.t("Damla çalışıyor", "Damla is running")
-        alert.informativeText = helper.isRunning
-            ? L.t("Sürüm \(version). Yardımcı arka planda çalışıyor.", "Version \(version). The helper is running in the background.")
-            : L.t("Sürüm \(version). Yardımcı şu an çalışmıyor.", "Version \(version). The helper is not running right now.")
-        alert.addButton(withTitle: L.t("Tamam", "OK"))
-        alert.addButton(withTitle: L.t("Güncellemeleri Denetle", "Check for Updates"))
-        alert.addButton(withTitle: L.t("Damla'yı Kapat", "Quit Damla"))
+        alert.messageText = String(localized: "status.title")
+        let template = helper.isRunning ? String(localized: "status.running") : String(localized: "status.stopped")
+        alert.informativeText = String(format: template, version)
+        alert.addButton(withTitle: String(localized: "common.ok"))
+        alert.addButton(withTitle: String(localized: "status.check"))
+        alert.addButton(withTitle: String(localized: "status.quit"))
         switch alert.runModal() {
         case .alertSecondButtonReturn: updater.checkForUpdates(nil)
         case .alertThirdButtonReturn: NSApp.terminate(nil)

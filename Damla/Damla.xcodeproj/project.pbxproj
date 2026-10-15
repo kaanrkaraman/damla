@@ -20,6 +20,7 @@
 		8C0C8B0B30811E3C00DAFC2A /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B0430811E3C00DAFC2A /* content.js */; };
 		8C0C8B1230811E3C00DAFC2A /* i18n.js in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B1130811E3C00DAFC2A /* i18n.js */; };
 		8C0C8B1430811E3C00DAFC2A /* _locales in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B1330811E3C00DAFC2A /* _locales */; };
+		8C0C8B2130811E3C00DAFC2A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8C0C8B2030811E3C00DAFC2A /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		8C0C8B0430811E3C00DAFC2A /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = content.js; path = ../../extension/content.js; sourceTree = "<group>"; };
 		8C0C8B1130811E3C00DAFC2A /* i18n.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = i18n.js; path = ../../extension/i18n.js; sourceTree = "<group>"; };
 		8C0C8B1330811E3C00DAFC2A /* _locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = _locales; path = ../../extension/_locales; sourceTree = "<group>"; };
+		8C0C8B2030811E3C00DAFC2A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				8C0C8AD430811E3A00DAFC2A /* AppDelegate.swift */,
 				8C0C8AE530811E3B00DAFC2A /* Assets.xcassets */,
 				8C0C8AE730811E3B00DAFC2A /* Info.plist */,
+				8C0C8B2030811E3C00DAFC2A /* Localizable.xcstrings */,
 			);
 			path = Damla;
 			sourceTree = "<group>";
@@ -194,6 +197,8 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
+				tr,
 			);
 			mainGroup = 8C0C8AC830811E3A00DAFC2A;
 			minimizedProjectReferenceProxies = 1;
@@ -213,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			files = (
 				8C0C8AE630811E3B00DAFC2A /* Assets.xcassets in Resources */,
+				8C0C8B2130811E3C00DAFC2A /* Localizable.xcstrings in Resources */,
 			);
 		};
 		8C0C8AEA30811E3B00DAFC2A /* Resources */ = {
@@ -405,11 +411,11 @@
 				CURRENT_PROJECT_VERSION = 0.5.0;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Damla Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Damla Extension";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Kaan Karaman";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -439,11 +445,11 @@
 				CURRENT_PROJECT_VERSION = 0.5.0;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Damla Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Damla Extension";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Kaan Karaman";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -474,17 +480,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.5.0;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Damla/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Damla";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Kaan Karaman";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../packaging/cache/Sparkle";
-				OTHER_LDFLAGS = "-framework Sparkle";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive = NO;
@@ -497,11 +501,12 @@
 					"-framework",
 					SafariServices,
 					"-framework",
+					Sparkle,
+					"-framework",
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kaan.damla;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -519,17 +524,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0.5.0;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Damla/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Damla";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Kaan Karaman";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../packaging/cache/Sparkle";
-				OTHER_LDFLAGS = "-framework Sparkle";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive = NO;
@@ -542,11 +545,12 @@
 					"-framework",
 					SafariServices,
 					"-framework",
+					Sparkle,
+					"-framework",
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kaan.damla;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
