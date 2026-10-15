@@ -4,12 +4,144 @@ import ServiceManagement
 import Sparkle
 
 private let extensionID = "com.kaan.damla.Extension"
+private let updateURLHost = "check-for-updates"
 
 private enum L {
     static let turkish = Locale.preferredLanguages.first?.hasPrefix("tr") == true
 
     static func t(_ tr: String, _ en: String) -> String {
         turkish ? tr : en
+    }
+}
+
+private enum Dialog {
+    @discardableResult
+    static func confirm(_ message: String, detail: String, accept: String, decline: String? = nil) -> Bool {
+        let alert = NSAlert()
+        alert.messageText = message
+        alert.informativeText = detail
+        alert.addButton(withTitle: accept)
+        if let decline { alert.addButton(withTitle: decline) }
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+}
+
+@MainActor
+private final class HelperSupervisor {
+    static let python: URL? = {
+        guard let url = Bundle.main.resourceURL?.appendingPathComponent("python/bin/python3"),
+              FileManager.default.isExecutableFile(atPath: url.path)
+        else { return nil }
+        return url
+    }()
+
+    private static let healthyRunTime: TimeInterval = 30
+    private static let maxDelay: TimeInterval = 60
+    private static let baseDelay: TimeInterval = 2
+
+    private var process: Process?
+    private var startedAt = Date.distantPast
+    private var delay = HelperSupervisor.baseDelay
+    private var stopped = false
+
+    var isRunning: Bool { process?.isRunning == true }
+
+    func start() {
+        guard !stopped, let python = Self.python, let resources = Bundle.main.resourceURL else { return }
+        let process = Process()
+        process.executableURL = python
+        process.arguments = ["-I", resources.appendingPathComponent("helper/server.py").path]
+        if let log = Self.openLog() {
+            process.standardOutput = log
+            process.standardError = log
+        }
+        process.terminationHandler = { [weak self] _ in
+            Task { @MainActor in self?.didExit() }
+        }
+        do {
+            try process.run()
+            self.process = process
+            startedAt = Date()
+        } catch {
+            scheduleRestart()
+        }
+    }
+
+    func stop() {
+        stopped = true
+        process?.terminate()
+    }
+
+    private func didExit() {
+        process = nil
+        delay = Date().timeIntervalSince(startedAt) > Self.healthyRunTime ? Self.baseDelay : min(delay * 2, Self.maxDelay)
+        scheduleRestart()
+    }
+
+    private func scheduleRestart() {
+        guard !stopped else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+            self?.start()
+        }
+    }
+
+    private static func openLog() -> FileHandle? {
+        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Logs/Damla.log")
+        if !FileManager.default.fileExists(atPath: url.path) {
+            FileManager.default.createFile(atPath: url.path, contents: nil)
+        }
+        guard let handle = try? FileHandle(forWritingTo: url) else { return nil }
+        _ = try? handle.seekToEnd()
+        return handle
+    }
+}
+
+@MainActor
+private enum LoginItem {
+    static var isEnabled: Bool { SMAppService.mainApp.status == .enabled }
+
+    static func offer() {
+        let service = SMAppService.mainApp
+        switch service.status {
+        case .notRegistered:
+            register(service)
+        case .requiresApproval:
+            askApproval()
+        case .enabled, .notFound:
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    private static func register(_ service: SMAppService) {
+        let allowed = Dialog.confirm(
+            L.t("Damla oturum açılınca arka planda başlasın mı?", "Start Damla when you log in?"),
+            detail: L.t(
+                "Damla, videoları indiren küçük bir yardımcıyı arka planda çalıştırır. Mac'inize girişte kendiliğinden açılmasına izin verirseniz Terminal'e gerek kalmaz. Sistem Ayarları › Genel › Giriş Öğeleri'nden istediğiniz zaman kapatabilirsiniz.",
+                "Damla runs a small helper in the background that downloads videos. Let it open automatically when you log in. You can turn it off any time in System Settings › General › Login Items."
+            ),
+            accept: L.t("Başlat", "Allow"),
+            decline: L.t("Şimdi değil", "Not Now")
+        )
+        guard allowed else { return }
+        do {
+            try service.register()
+        } catch {
+            Dialog.confirm(L.t("Başlatılamadı", "Couldn't turn it on"), detail: error.localizedDescription, accept: L.t("Tamam", "OK"))
+            return
+        }
+        if service.status == .requiresApproval { askApproval() }
+    }
+
+    private static func askApproval() {
+        let open = Dialog.confirm(
+            L.t("Sistem Ayarları'nda izin verin", "Allow it in System Settings"),
+            detail: L.t("Giriş Öğeleri'nde “Damla” için arka plan iznini açın.", "Turn on Damla under Login Items."),
+            accept: L.t("Ayarları Aç", "Open Settings"),
+            decline: L.t("Şimdi değil", "Not Now")
+        )
+        if open { SMAppService.openSystemSettingsLoginItems() }
     }
 }
 
@@ -27,43 +159,37 @@ enum Launcher {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-    private var helper: Process?
-    private var helperStartedAt = Date.distantPast
-    private var restartDelay: TimeInterval = 2
-    private var quitting = false
+    private let helper = HelperSupervisor()
 
-    private var bundledPython: URL? {
-        guard let python = Bundle.main.resourceURL?.appendingPathComponent("python/bin/python3"),
-              FileManager.default.isExecutableFile(atPath: python.path)
-        else { return nil }
-        return python
+    private var runsFromDiskImage: Bool {
+        let path = Bundle.main.bundlePath
+        return path.hasPrefix("/Volumes/") || path.contains("/AppTranslocation/")
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        if runsFromDiskImage() {
+        guard !runsFromDiskImage else {
             NSApp.activate(ignoringOtherApps: true)
-            _ = ask(
+            Dialog.confirm(
                 L.t("Önce Applications klasörüne taşıyın", "Move it to Applications first"),
-                L.t("Damla'yı Uygulamalar klasörüne sürükleyip oradan açın.", "Drag Damla to your Applications folder and open it from there."),
-                L.t("Tamam", "OK"),
-                nil
+                detail: L.t("Damla'yı Uygulamalar klasörüne sürükleyip oradan açın.", "Drag Damla to your Applications folder and open it from there."),
+                accept: L.t("Tamam", "OK")
             )
             NSApp.terminate(nil)
             return
         }
-        startHelper()
-        if bundledPython != nil, SMAppService.mainApp.status != .enabled {
+        let bundled = HelperSupervisor.python != nil
+        helper.start()
+        if bundled, !LoginItem.isEnabled {
             NSApp.activate(ignoringOtherApps: true)
-            offerLoginItem()
+            LoginItem.offer()
         }
-        if SMAppService.mainApp.status != .enabled || bundledPython == nil {
+        if !bundled || !LoginItem.isEnabled {
             offerExtension()
         }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        quitting = true
-        helper?.terminate()
+        helper.stop()
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -72,110 +198,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func application(_ application: NSApplication, open urls: [URL]) {
-        guard urls.contains(where: { $0.scheme == "damla" && $0.host == "check-for-updates" }) else { return }
+        guard urls.contains(where: { $0.scheme == "damla" && $0.host == updateURLHost }) else { return }
         NSApp.activate(ignoringOtherApps: true)
         updater.checkForUpdates(nil)
-    }
-
-    private func runsFromDiskImage() -> Bool {
-        let path = Bundle.main.bundlePath
-        return path.hasPrefix("/Volumes/") || path.contains("/AppTranslocation/")
-    }
-
-    private func startHelper() {
-        guard !quitting, let python = bundledPython, let resources = Bundle.main.resourceURL else { return }
-        let process = Process()
-        process.executableURL = python
-        process.arguments = ["-I", resources.appendingPathComponent("helper/server.py").path]
-        if let log = logHandle() {
-            process.standardOutput = log
-            process.standardError = log
-        }
-        process.terminationHandler = { [weak self] _ in
-            Task { @MainActor [weak self] in self?.helperExited() }
-        }
-        do {
-            try process.run()
-            helper = process
-            helperStartedAt = Date()
-        } catch {
-            scheduleRestart()
-        }
-    }
-
-    private func helperExited() {
-        helper = nil
-        restartDelay = Date().timeIntervalSince(helperStartedAt) > 30 ? 2 : min(restartDelay * 2, 60)
-        scheduleRestart()
-    }
-
-    private func scheduleRestart() {
-        guard !quitting else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + restartDelay) { [weak self] in
-            self?.startHelper()
-        }
-    }
-
-    private func logHandle() -> FileHandle? {
-        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Logs/Damla.log")
-        if !FileManager.default.fileExists(atPath: url.path) {
-            FileManager.default.createFile(atPath: url.path, contents: nil)
-        }
-        guard let handle = try? FileHandle(forWritingTo: url) else { return nil }
-        _ = try? handle.seekToEnd()
-        return handle
-    }
-
-    private func offerLoginItem() {
-        let service = SMAppService.mainApp
-        switch service.status {
-        case .notRegistered:
-            let allow = ask(
-                L.t("Damla oturum açılınca arka planda başlasın mı?", "Start Damla when you log in?"),
-                L.t(
-                    "Damla, videoları indiren küçük bir yardımcıyı arka planda çalıştırır. Mac'inize girişte kendiliğinden açılmasına izin verirseniz Terminal'e gerek kalmaz. Sistem Ayarları › Genel › Giriş Öğeleri'nden istediğiniz zaman kapatabilirsiniz.",
-                    "Damla runs a small helper in the background that downloads videos. Let it open automatically when you log in. You can turn it off any time in System Settings › General › Login Items."
-                ),
-                L.t("Başlat", "Allow"),
-                L.t("Şimdi değil", "Not Now")
-            )
-            guard allow else { return }
-            do {
-                try service.register()
-            } catch {
-                _ = ask(L.t("Başlatılamadı", "Couldn't turn it on"), error.localizedDescription, L.t("Tamam", "OK"), nil)
-                return
-            }
-            if service.status == .requiresApproval { askApproval() }
-        case .requiresApproval:
-            askApproval()
-        default:
-            break
-        }
-    }
-
-    private func askApproval() {
-        let open = ask(
-            L.t("Sistem Ayarları'nda izin verin", "Allow it in System Settings"),
-            L.t("Giriş Öğeleri'nde “Damla” için arka plan iznini açın.", "Turn on Damla under Login Items."),
-            L.t("Ayarları Aç", "Open Settings"),
-            L.t("Şimdi değil", "Not Now")
-        )
-        if open { SMAppService.openSystemSettingsLoginItems() }
     }
 
     private func offerExtension() {
         SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionID) { state, _ in
             Task { @MainActor in
                 guard let state, !state.isEnabled else { return }
-                let open = self.ask(
+                let open = Dialog.confirm(
                     L.t("Eklentiyi Safari'de açın", "Turn on the extension in Safari"),
-                    L.t(
+                    detail: L.t(
                         "Safari Ayarları › Uzantılar bölümünde “Damla”yı etkinleştirin ve kullandığınız sitelere erişim izni verin.",
                         "In Safari Settings › Extensions, enable Damla and allow it on the sites you use."
                     ),
-                    L.t("Safari Ayarlarını Aç", "Open Safari Settings"),
-                    L.t("Şimdi değil", "Not Now")
+                    accept: L.t("Safari Ayarlarını Aç", "Open Safari Settings"),
+                    decline: L.t("Şimdi değil", "Not Now")
                 )
                 if open { try? await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID) }
             }
@@ -185,10 +224,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showStatus() {
         NSApp.activate(ignoringOtherApps: true)
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
-        let running = helper?.isRunning == true
         let alert = NSAlert()
         alert.messageText = L.t("Damla çalışıyor", "Damla is running")
-        alert.informativeText = running
+        alert.informativeText = helper.isRunning
             ? L.t("Sürüm \(version). Yardımcı arka planda çalışıyor.", "Version \(version). The helper is running in the background.")
             : L.t("Sürüm \(version). Yardımcı şu an çalışmıyor.", "Version \(version). The helper is not running right now.")
         alert.addButton(withTitle: L.t("Tamam", "OK"))
@@ -199,14 +237,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .alertThirdButtonReturn: NSApp.terminate(nil)
         default: break
         }
-    }
-
-    private func ask(_ message: String, _ detail: String, _ yes: String, _ no: String?) -> Bool {
-        let alert = NSAlert()
-        alert.messageText = message
-        alert.informativeText = detail
-        alert.addButton(withTitle: yes)
-        if let no { alert.addButton(withTitle: no) }
-        return alert.runModal() == .alertFirstButtonReturn
     }
 }
