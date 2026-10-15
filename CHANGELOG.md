@@ -4,6 +4,9 @@ All notable changes to Damla. Each release section is shown to users in the upda
 
 ## [Unreleased]
 
+### Added
+- The extension also runs in Chrome. Load `extension/dist` unpacked; downloads still go through the Damla app, and cookies come from the browser that started the download.
+
 ## [0.7.3] - 2026-10-15
 
 ### Changed

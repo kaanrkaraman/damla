@@ -10,6 +10,13 @@ Damla is a Safari extension plus a small background app that runs [yt-dlp](https
 2. Open it and drag Damla to Applications, then launch it from there.
 3. In Safari: Settings › Extensions › enable Damla and allow it on the sites you use.
 
+### Chrome
+
+The Damla app from step 2 must be installed and running; the Chrome extension talks to the same local helper.
+
+1. Build the extension: `npm ci && npm run build`.
+2. Open `chrome://extensions`, turn on Developer mode, click "Load unpacked" and choose `extension/dist`.
+
 Requires macOS 14 or later on Apple Silicon. Available in English, Türkçe and Deutsch. The app is signed with a Developer ID and notarized by Apple. It updates itself (Sparkle) and keeps yt-dlp current.
 
 ## Privacy

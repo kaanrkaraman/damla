@@ -15,6 +15,6 @@ await build({
   outdir: OUT,
   bundle: true,
   format: "iife",
-  target: "safari17",
+  target: ["safari17", "chrome120"],
   legalComments: "none",
 });

@@ -90,6 +90,7 @@ def test_progress_percent_prefers_bytes_then_falls_back_to_fragments() -> None:
 def test_writes_require_the_extension_origin() -> None:
     host = f"127.0.0.1:{server.PORT}"
     assert server.is_allowed("safari-web-extension://abc", host, write=True)
+    assert server.is_allowed("chrome-extension://abc", host, write=True)
     assert not server.is_allowed("https://evil.example", host, write=True)
     assert not server.is_allowed(None, host, write=True)
 
@@ -104,3 +105,10 @@ def test_reads_without_origin_need_the_local_host_header() -> None:
 def test_unknown_routes_return_not_found() -> None:
     assert server.route("GET", ["nope"], {})[0] == 404
     assert server.route("DELETE", ["jobs"], {})[0] == 404
+
+
+def test_cookies_come_from_the_requesting_browser() -> None:
+    cmd = server.command({**JOB, "browser": server.browser_for("chrome-extension://abc")}, settings(cookies=True), M1)
+    assert cmd[cmd.index("--cookies-from-browser") + 1] == "chrome"
+    assert server.browser_for("safari-web-extension://abc") == "safari"
+    assert server.browser_for(None) == "safari"
