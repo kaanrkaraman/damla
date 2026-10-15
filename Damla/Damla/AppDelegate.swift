@@ -18,7 +18,6 @@ private enum Dialog {
     }
 }
 
-@MainActor
 private final class HelperSupervisor {
     static let python: URL? = {
         guard let url = Bundle.main.resourceURL?.appendingPathComponent("python/bin/python3"),
@@ -89,7 +88,6 @@ private final class HelperSupervisor {
     }
 }
 
-@MainActor
 private enum LoginItem {
     static var isEnabled: Bool { SMAppService.mainApp.status == .enabled }
 
@@ -137,7 +135,6 @@ private enum LoginItem {
 
 @main
 enum Launcher {
-    @MainActor
     static func main() {
         let app = NSApplication.shared
         let delegate = AppDelegate()
@@ -146,7 +143,6 @@ enum Launcher {
     }
 }
 
-@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     private let helper = HelperSupervisor()
