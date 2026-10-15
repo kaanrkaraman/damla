@@ -21,7 +21,7 @@ private enum Dialog {
 private final class HelperSupervisor {
     static let python: URL? = {
         guard let url = Bundle.main.resourceURL?.appendingPathComponent("python/bin/python3"),
-              FileManager.default.isExecutableFile(atPath: url.path)
+            FileManager.default.isExecutableFile(atPath: url.path)
         else { return nil }
         return url
     }()
@@ -203,7 +203,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 do {
                     try await SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionID)
                 } catch {
-                    Dialog.confirm(String(localized: "extension.title"), detail: error.localizedDescription, accept: String(localized: "common.ok"))
+                    Dialog.confirm(
+                        String(localized: "extension.title"), detail: error.localizedDescription, accept: String(localized: "common.ok"))
                 }
             }
         }
