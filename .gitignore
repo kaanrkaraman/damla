@@ -14,3 +14,6 @@ __pycache__/
 appcast.xml
 node_modules/
 extension/dist/
+.venv/
+.ruff_cache/
+.pytest_cache/

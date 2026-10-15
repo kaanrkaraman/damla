@@ -1,0 +1,46 @@
+[project]
+name = "damla-helper"
+version = "0.0.0"
+description = "Local yt-dlp helper behind the Damla Safari extension"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["helper"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+src = ["helper", "scripts", "tests"]
+extend-exclude = ["packaging", "node_modules"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "CPY", "FIX", "TD", "COM812", "ISC001", "T201", "S603", "S607", "TRY003", "EM101", "EM102"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.ruff.lint.pylint]
+max-returns = 12
+
+[tool.ruff.lint.per-file-ignores]
+"helper/server.py" = ["S310"]
+"tests/*" = ["S101", "PLR2004"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+    "ty>=0.0.88",
+]
+
+[tool.ty.environment]
+extra-paths = ["helper"]
+
+[tool.ty.src]
+include = ["helper", "scripts", "tests"]
