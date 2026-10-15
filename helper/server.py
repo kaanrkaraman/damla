@@ -83,7 +83,7 @@ SEQ = itertools.count(1)
 def load_json[T](path: Path, default: T) -> T:
     try:
         return json.loads(path.read_text())
-    except (OSError, ValueError):
+    except OSError, ValueError:
         return default
 
 
@@ -164,7 +164,7 @@ def latest_release(repo: str) -> dict[str, str] | None:
         with urllib.request.urlopen(req, timeout=8, context=SSL_CTX) as r:
             data = json.load(r)
         return {"version": data["tag_name"].lstrip("v"), "url": data["html_url"]}
-    except (OSError, ValueError, KeyError):
+    except OSError, ValueError, KeyError:
         return None
 
 
