@@ -1,3 +1,4 @@
+import "./compat";
 import { Overlay } from "./overlay";
 import { collectPosts, toItems } from "./scrape";
 import type { ContentMessage } from "./types";
@@ -20,8 +21,8 @@ function sweep(): void {
   for (const post of posts) if (post.mount) overlay.attach(post.mount, post);
 }
 
-browser.runtime.onMessage.addListener((message: ContentMessage | { type: "scan" }) => {
-  if (message.type === "scan") return Promise.resolve(toItems(collectPosts()));
+browser.runtime.onMessage.addListener((message: ContentMessage | { type: "scan" }, _sender, sendResponse) => {
+  if (message.type === "scan") sendResponse(toItems(collectPosts()));
   if (message.type === "jobs") overlay.applyJobs(message.jobs);
   return undefined;
 });

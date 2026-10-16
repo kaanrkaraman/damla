@@ -20,7 +20,7 @@ HOME = Path.home()
 APP_DIR = HOME / "Library" / "Application Support" / "Damla"
 SETTINGS_FILE = APP_DIR / "settings.json"
 HISTORY_FILE = APP_DIR / "history.json"
-ORIGIN_PREFIX = "safari-web-extension://"
+BROWSERS = {"safari-web-extension://": "safari", "chrome-extension://": "chrome"}
 PORT = 7560
 API_VERSION = 1
 HOSTS = (f"127.0.0.1:{PORT}", f"localhost:{PORT}")
@@ -123,7 +123,7 @@ SETTINGS: dict = dict(DEFAULTS)
 
 
 def public(job: Job) -> Job:
-    return {k: v for k, v in job.items() if k not in ("proc", "seq")}
+    return {k: v for k, v in job.items() if k not in ("proc", "seq", "browser")}
 
 
 def settings_view() -> Settings:
@@ -288,7 +288,7 @@ def command(job: Job, s: Settings, codecs: dict[str, str]) -> list[str]:
             cmd += ["-f", native_format(codecs), "-S", f"{res},vcodec,acodec:aac"]
         cmd += ["--merge-output-format", "mp4"]
     if s["cookies"]:
-        cmd += ["--cookies-from-browser", "safari"]
+        cmd += ["--cookies-from-browser", job.get("browser", "safari")]
     folder = Path(s["folder"])
     if s["by_site"]:
         folder /= (urlparse(job["url"]).hostname or "other").removeprefix("www.")
@@ -438,7 +438,7 @@ def pump() -> None:
             threading.Thread(target=run, args=(j, dict(SETTINGS)), daemon=True).start()
 
 
-def new_job(item: dict[str, Any]) -> Job:
+def new_job(item: dict[str, Any], browser: str = "safari") -> Job:
     thumb = str(item.get("thumb", ""))
     return {
         "id": uuid.uuid4().hex[:8],
@@ -452,10 +452,11 @@ def new_job(item: dict[str, Any]) -> Job:
         "path": "",
         "msg": "",
         "finished": 0,
+        "browser": browser,
     }
 
 
-def enqueue(items: list[dict[str, Any]]) -> list[Job]:
+def enqueue(items: list[dict[str, Any]], browser: str = "safari") -> list[Job]:
     out, fresh = [], []
     with LOCK:
         for item in items:
@@ -466,7 +467,7 @@ def enqueue(items: list[dict[str, Any]]) -> list[Job]:
             if existing:
                 out.append(existing)
                 continue
-            job = new_job(item)
+            job = new_job(item, browser)
             fresh.append(job)
             out.append(job)
         JOBS[0:0] = fresh
@@ -536,7 +537,7 @@ def list_jobs() -> dict[str, Any]:
         return {"jobs": [public(j) for j in JOBS], "ytdlp": TOOL["ytdlp"]}
 
 
-def route(method: str, parts: list[str], body: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+def route(method: str, parts: list[str], body: dict[str, Any], origin: str | None = None) -> tuple[int, dict[str, Any]]:
     match method, parts:
         case "GET", ["jobs"]:
             return 200, list_jobs()
@@ -548,7 +549,7 @@ def route(method: str, parts: list[str], body: dict[str, Any]) -> tuple[int, dic
             return 200, store_settings(body)
         case "POST", ["jobs"]:
             items = body.get("items", [])
-            return 202, {"jobs": enqueue(items if isinstance(items, list) else [])}
+            return 202, {"jobs": enqueue(items if isinstance(items, list) else [], browser_for(origin))}
         case "POST", ["jobs", job_id, "cancel"]:
             return 200, {"ok": cancel(job_id)}
         case "POST", ["jobs", job_id, "reveal"]:
@@ -563,11 +564,15 @@ def route(method: str, parts: list[str], body: dict[str, Any]) -> tuple[int, dic
             return 404, {"error": "not found"}
 
 
+def browser_for(origin: str | None) -> str:
+    return next((name for prefix, name in BROWSERS.items() if origin and origin.startswith(prefix)), "safari")
+
+
 # Safari sends no Origin on extension GET requests but does on POST and PUT,
 # so header-less reads are allowed only for the local Host.
 def is_allowed(origin: str | None, host: str | None, *, write: bool) -> bool:
     if origin:
-        return origin.startswith(ORIGIN_PREFIX)
+        return origin.startswith(tuple(BROWSERS))
     return not write and host in HOSTS
 
 
@@ -598,7 +603,7 @@ class Handler(BaseHTTPRequestHandler):
             self._reply(403, {"error": "forbidden"})
             return
         parts = urlparse(self.path).path.strip("/").split("/")
-        self._reply(*route(self.command, parts, self._body()))
+        self._reply(*route(self.command, parts, self._body(), origin))
 
     def do_OPTIONS(self) -> None:
         origin = self.headers.get("Origin")

@@ -1,3 +1,4 @@
+import "./compat";
 import { request } from "./helper";
 import type { BackgroundMessage } from "./types";
 import { isActive } from "./types";
@@ -31,18 +32,21 @@ async function trackBadge(): Promise<void> {
 
 const setIcon = (tabId: number, found: boolean) => browser.action.setIcon({ tabId, path: found ? ICON_ON : ICON_OFF }).catch(() => {});
 
-browser.runtime.onMessage.addListener((message: BackgroundMessage, sender: browser.runtime.MessageSender) => {
-  if ("type" in message) {
-    if (sender.tab?.id !== undefined) setIcon(sender.tab.id, message.found);
-    return undefined;
-  }
-  if (!("api" in message)) return undefined;
-  const { method, path, body } = message.api;
-  return request(method, path, body).then((reply) => {
-    if (method === "POST" && path === "/jobs" && !reply.offline) void trackBadge();
-    return reply;
-  });
-});
+browser.runtime.onMessage.addListener(
+  (message: BackgroundMessage, sender: browser.runtime.MessageSender, sendResponse: (reply: unknown) => void) => {
+    if ("type" in message) {
+      if (sender.tab?.id !== undefined) setIcon(sender.tab.id, message.found);
+      return undefined;
+    }
+    if (!("api" in message)) return undefined;
+    const { method, path, body } = message.api;
+    void request(method, path, body).then((reply) => {
+      if (method === "POST" && path === "/jobs" && !reply.offline) void trackBadge();
+      sendResponse(reply);
+    });
+    return true;
+  },
+);
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status === "loading") setIcon(tabId, false);

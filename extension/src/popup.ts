@@ -1,3 +1,4 @@
+import "./compat";
 import { api } from "./api";
 import { h, type IconName, icon, svg } from "./dom";
 import { jobMessage, LANG, t, tn } from "./i18n";
